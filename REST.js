@@ -24,17 +24,17 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             connection.query(get_teams, function(err,rows,fields) {
                 for(var x in rows)
                 {
-                    team_table += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_number +"'><td>"+ rows[x].team_number +"</td><td>"+ rows[x].team_name +"</td></tr>";
+                    team_table += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
                 }
 
             });
 
             //CONTRIB SCORE QUERY
-            var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_contrib_score DESC, team_number ASC";
+            var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_contrib_score DESC, team_num ASC";
             connection.query(get_contrib_score_rank, function(err, rows, fields) {
                 for(var x in rows)
                 {
-                    team_score_table += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_number +"'><td>"+ rows[x].team_number +"</td><td>"+ rows[x].avg_contrib_score +"</td><td>"+ rows[x].avg_driver_rating +"</td></tr>";
+                    team_score_table += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].avg_contrib_score +"</td><td>"+ rows[x].avg_driver_rating +"</td></tr>";
                 }
                 res.render('pages/index', {
                     teams1: team_table,
@@ -50,10 +50,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 			console.log(req.params.team_2);
 			console.log(req.params.team_3);
 
-			var team_number_1 = !Number.isNaN(req.params.team_1) ? Number(req.params.team_1) : 0;
+			var team_num_1 = !Number.isNaN(req.params.team_1) ? Number(req.params.team_1) : 0;
             var team_name_1 = "";
-            var next_team_number_1 = 0;
-            var previous_team_number_1 = 0;
+            var next_team_num_1 = 0;
+            var previous_team_num_1 = 0;
             var avg_score_1 = 0;
             var avg_auton_score_1 = 0;
             var perc_high_made_1 = 0;
@@ -126,10 +126,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             var auton_reaches_1 = 0;
             var no_autos_1 = 0;
 
-			var team_number_2 = !Number.isNaN(req.params.team_2) ? Number(req.params.team_2) : 0;
+			var team_num_2 = !Number.isNaN(req.params.team_2) ? Number(req.params.team_2) : 0;
             var team_name_2 = "";
-            var next_team_number_2 = 0;
-            var previous_team_number_2 = 0;
+            var next_team_num_2 = 0;
+            var previous_team_num_2 = 0;
             var avg_score_2 = 0;
             var avg_auton_score_2 = 0;
             var perc_high_made_2 = 0;
@@ -202,10 +202,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             var auton_reaches_2 = 0;
             var no_autos_2 = 0;
 
-			var team_number_3 = !Number.isNaN(req.params.team_3) ? Number(req.params.team_3) : 0;
+			var team_num_3 = !Number.isNaN(req.params.team_3) ? Number(req.params.team_3) : 0;
             var team_name_3 = "";
-            var next_team_number_3 = 0;
-            var previous_team_number_3 = 0;
+            var next_team_num_3 = 0;
+            var previous_team_num_3 = 0;
             var avg_score_3 = 0;
             var avg_auton_score_3 = 0;
             var perc_high_made_3 = 0;
@@ -278,18 +278,18 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             var auton_reaches_3 = 0;
             var no_autos_3 = 0;
 
-			if(team_number_1 != 0 && team_number_2 != 0 && team_number_3 != 0)
+			if(team_num_1 != 0 && team_num_2 != 0 && team_num_3 != 0)
 			{
-            updateContribScores(team_number_1);
-			updateContribScores(team_number_2);
-			updateContribScores(team_number_3);
-            updateTeams(team_number_1);
-			updateTeams(team_number_2);
-			updateTeams(team_number_3);
+            updateContribScores(team_num_1);
+			updateContribScores(team_num_2);
+			updateContribScores(team_num_3);
+            updateTeams(team_num_1);
+			updateTeams(team_num_2);
+			updateTeams(team_num_3);
 
-			//if(!isNaN(team_number_1))
+			//if(!isNaN(team_num_1))
 			//{
-				var get_data_1 = "SELECT * FROM teams WHERE team_number='"+ team_number_1 +"'";
+				var get_data_1 = "SELECT * FROM teams WHERE team_num='"+ team_num_1 +"'";
 
 				connection.query(get_data_1, function(err, rows, fields) {
 					team_name_1 = rows[0].team_name;
@@ -386,7 +386,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 					auton_reaches_1 = rows[0].auton_reaches_total;
 				});
 
-				var no_auto_sql_1 = "SELECT * FROM matches WHERE team_number='"+ team_number_1 +"'";
+				var no_auto_sql_1 = "SELECT * FROM matches WHERE team_num='"+ team_num_1 +"'";
 				connection.query(no_auto_sql_1, function(err, rows, fields) {
 					for(var x in rows)
 					{
@@ -399,9 +399,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 				});
 			//}
 
-			//if(!isNaN(team_number_2))
+			//if(!isNaN(team_num_2))
 			//{
-				var get_data_2 = "SELECT * FROM teams WHERE team_number='"+ team_number_2 +"'";
+				var get_data_2 = "SELECT * FROM teams WHERE team_num='"+ team_num_2 +"'";
 
 				connection.query(get_data_2, function(err, rows, fields) {
 					if(rows[0] != undefined)
@@ -501,7 +501,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 					}
 				});
 
-				var no_auto_sql_2 = "SELECT * FROM matches WHERE team_number='"+ team_number_2 +"'";
+				var no_auto_sql_2 = "SELECT * FROM matches WHERE team_num='"+ team_num_2 +"'";
 				connection.query(no_auto_sql_2, function(err, rows, fields) {
 					for(var x in rows)
 					{
@@ -514,9 +514,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 				});
 			//}
 
-			//if(!isNaN(team_number_3))
+			//if(!isNaN(team_num_3))
 			//{
-				var get_data_3 = "SELECT * FROM teams WHERE team_number='"+ team_number_3 +"'";
+				var get_data_3 = "SELECT * FROM teams WHERE team_num='"+ team_num_3 +"'";
 
 				connection.query(get_data_3, function(err, rows, fields) {
 					if(rows[0] != undefined)
@@ -616,7 +616,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 					}
 				});
 
-				var no_auto_sql_3 = "SELECT * FROM matches WHERE team_number='"+ team_number_3 +"'";
+				var no_auto_sql_3 = "SELECT * FROM matches WHERE team_num='"+ team_num_3 +"'";
 				connection.query(no_auto_sql_3, function(err, rows, fields) {
 					for(var x in rows)
 					{
@@ -630,7 +630,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 
 
 				res.render('pages/alliance', {
-					team_number_1: team_number_1,
+					team_num_1: team_num_1,
 					team_name_1: team_name_1,
 					avg_score_1: avg_score_1,
 					avg_auton_score_1: avg_auton_score_1,
@@ -717,7 +717,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 					challenge_attempts_1: challenge_attempts_1,
 					no_autos_1: no_autos_1,
 					auton_reaches_1: auton_reaches_1,
-					team_number_2: team_number_2,
+					team_num_2: team_num_2,
 					team_name_2: team_name_2,
 					avg_score_2: avg_score_2,
 					avg_auton_score_2: avg_auton_score_2,
@@ -804,7 +804,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 					challenge_attempts_2: challenge_attempts_2,
 					no_autos_2: no_autos_2,
 					auton_reaches_2: auton_reaches_2,
-					team_number_3: team_number_3,
+					team_num_3: team_num_3,
 					team_name_3: team_name_3,
 					avg_score_3: avg_score_3,
 					avg_auton_score_3: avg_auton_score_3,
@@ -895,11 +895,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 			}
 		});
 
-        router.get('/team/:team_number', function(req,res) {
-            var team_number = req.params.team_number;
+        router.get('/team/:team_num', function(req,res) {
+            var team_num = req.params.team_num;
             var team_name = "";
-            var next_team_number = 0;
-            var previous_team_number = 0;
+            var next_team_num = 0;
+            var previous_team_num = 0;
             var avg_score = 0;
             var avg_auton_score = 0;
             var perc_high_made = 0;
@@ -980,14 +980,14 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             var trend_labels = "";
             var trend_data = "";
             var high_goal_trend = "";
-			updateContribScores(team_number);
-            updateTeams(team_number);
+			updateContribScores(team_num);
+            updateTeams(team_num);
 
 
-            var get_data = "SELECT * FROM teams WHERE team_number='"+ team_number +"'";
-            var next_team = "SELECT * FROM teams WHERE team_number > '"+ team_number +"' ORDER BY team_number LIMIT 1";
-            var previous_team = "SELECT * FROM teams WHERE team_number < '"+ team_number +"' ORDER BY team_number DESC LIMIT 1";
-            var get_graph_data = "SELECT * FROM matches WHERE team_number='"+ team_number +"' ORDER BY match_number";
+            var get_data = "SELECT * FROM teams WHERE team_num='"+ team_num +"'";
+            var next_team = "SELECT * FROM teams WHERE team_num > '"+ team_num +"' ORDER BY team_num LIMIT 1";
+            var previous_team = "SELECT * FROM teams WHERE team_num < '"+ team_num +"' ORDER BY team_num DESC LIMIT 1";
+            var get_graph_data = "SELECT * FROM matches WHERE team_num='"+ team_num +"' ORDER BY match_number";
 
             connection.query(get_data, function(err, rows, fields) {
                 team_name = rows[0].team_name;
@@ -1087,7 +1087,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 
             });
 
-            var no_auto_sql = "SELECT * FROM matches WHERE team_number='"+ team_number +"'";
+            var no_auto_sql = "SELECT * FROM matches WHERE team_num='"+ team_num +"'";
             connection.query(no_auto_sql, function(err, rows, fields) {
                 for(var x in rows)
                 {
@@ -1102,27 +1102,27 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 
             var last_team;
             var first_team;
-            var get_last_team_sql = "SELECT team_number FROM teams WHERE 1=1 ORDER BY team_number DESC";
-            var get_first_team_sql = "SELECT team_number FROM teams WHERE 1=1";
+            var get_last_team_sql = "SELECT team_num FROM teams WHERE 1=1 ORDER BY team_num DESC";
+            var get_first_team_sql = "SELECT team_num FROM teams WHERE 1=1";
             connection.query(get_last_team_sql, function(err, rows, fields) {
-                 last_team = rows[0].team_number;
+                 last_team = rows[0].team_num;
             });
             connection.query(get_first_team_sql, function(err, rows, fields) {
-                first_team = rows[0].team_number;
+                first_team = rows[0].team_num;
             });
 
             connection.query(next_team, function(err, rows, fields) {
-                if(team_number == last_team)
-                    next_team_number = first_team;
+                if(team_num == last_team)
+                    next_team_num = first_team;
                 else
-                    next_team_number = rows[0].team_number;
+                    next_team_num = rows[0].team_num;
             });
 
             connection.query(previous_team, function(err, rows, fields) {
-                if(team_number == first_team)
-                    previous_team_number = last_team;
+                if(team_num == first_team)
+                    previous_team_num = last_team;
                 else
-                    previous_team_number = rows[0].team_number;
+                    previous_team_num = rows[0].team_num;
             });
 
             connection.query(get_graph_data, function(err, rows, fields){
@@ -1135,10 +1135,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
                 console.log(high_goal_trend);
 
                 res.render('pages/team', {
-                    team_number: team_number,
+                    team_num: team_num,
                     team_name: team_name,
-                    next_team: next_team_number,
-                    previous_team: previous_team_number,
+                    next_team: next_team_num,
+                    previous_team: previous_team_num,
                     avg_score: avg_score,
                     avg_auton_score: avg_auton_score,
                     auton_pc_crosses: auton_defense_crossings[0],
@@ -1254,37 +1254,43 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             var auto_low_missed = Number(req.body.auto_low_missed);
             var baseline_cross = Number(req.body.baseline_cross);
             var auto_hopper_intake = Number(req.body.auto_hopper_intake);
-            var auto_gear_intake = Number(req.body.auto_gear_intake);
-            var auto_floor_intake = Number(req.body.auto_floor_intake);
+            var auto_floor_gear_intake = Number(req.body.auto_floor_gear_intake);
+            var auto_floor_ball_intake = Number(req.body.auto_floor_ball_intake);
             var auto_gears_scored = Number(req.body.auto_gears_scored);
+            var auto_gears_missed = Number(req.body.auto_gears_missed);
             var tele_high_made = Number(req.body.tele_high_made);
             var tele_high_missed = Number(req.body.tele_high_missed);
             var tele_low_made = Number(req.body.tele_low_made);
             var tele_low_missed = Number(req.body.tele_low_missed);
             var num_cycles = Number(req.body.num_cycles);
-            var floor_ball_intake = Number(req.body.floor_ball_intake);
+            var tele_floor_ball_intake = Number(req.body.tele_floor_ball_intake);
             var hp_ball_intake = Number(req.body.hp_ball_intake);
-            var hopper_intake = Number(req.body.hopper_intake);
-            var gears_scored = Number(req.body.gears_scored);
-            var gears_missed = Number(req.body.gears_missed);
-            var floor_gear_intake = Number(req.body.floor_gear_intake);
+            var tele_hopper_intake = Number(req.body.tele_hopper_intake);
+            var tele_gears_scored = Number(req.body.tele_gears_scored);
+            var tele_gears_missed = Number(req.body.tele_gears_missed);
+            var tele_floor_gear_intake = Number(req.body.tele_floor_gear_intake);
             var hp_gear_intake = Number(req.body.hp_gear_intake);
             var fouls = Number(req.body.fouls);
             var dead = Number(req.body.dead);
             var climb = Number(req.body.climb);
             var failed_climb = Number(req.body.failed_climb);
 
+            var auto_kpa = auto_high_made + 1/3 * auto_low_made;
+            var tot_kpa = auto_kpa + 1/3 * tele_high_made + 1/9 * tele_low_made;
+
+            console.log(auto_kpa + ", " + tot_kpa);
+
             var matches_sql_v2 = "INSERT INTO `matches` (`match_num`, `team_num`, `auto_high_made`, `auto_high_missed`, " +
-              "`auto_low_made`, `auto_low_missed`, `baseline_cross`, `auto_hopper_intake`, `auto_gear_intake`, " +
-              "`auto_floor_intake`, `auto_gears_scored`, `tele_high_made`, `tele_high_missed`, `tele_low_made`, " +
-              "`tele_low_missed`, `num_cycles`, `floor_ball_intake`, `hp_ball_intake`, `hopper_intake`, `gears_scored`, " +
-              "`gears_missed`, `floor_gear_intake`, `hp_gear_intake`, `fouls`, `dead`, `climb`, `failed_climb`) VALUES" +
-              "(" + match_num + ", " + team_num + ", " + auto_high_made + ", " + auto_high_missed + ", " + auto_low_made +
-              ", " + auto_low_missed + ", " + baseline_cross + ", " + auto_hopper_intake + ", " + auto_gear_intake +
-              ", " + auto_floor_intake + ", " + auto_gears_scored + ", " + tele_high_made + ", " + tele_high_missed +
-              ", " + tele_low_made + ", " + tele_low_missed + ", " + num_cycles + ", " + floor_ball_intake +
-              ", " + hp_ball_intake + ", " + hopper_intake + ", " + gears_scored + ", " + gears_missed + ", " + floor_gear_intake +
-              ", " + hp_gear_intake + ", " + fouls + ", " + dead + ", " + climb + ", " + failed_climb + ");"
+              "`auto_low_made`, `auto_low_missed`, `baseline_cross`, `auto_hopper_intake`, `auto_floor_gear_intake`, " +
+              "`auto_floor_ball_intake`, `auto_gears_scored`, `auto_gears_missed`, `tele_high_made`, `tele_high_missed`, `tele_low_made`, " +
+              "`tele_low_missed`, `num_cycles`, `tele_floor_ball_intake`, `hp_ball_intake`, `tele_hopper_intake`, `tele_gears_scored`, " +
+              "`tele_gears_missed`, `tele_floor_gear_intake`, `hp_gear_intake`, `fouls`, `dead`, `climb`, `failed_climb`, `auto_contrib_kpa`, " +
+              "`contrib_kpa`) VALUES (" + match_num + ", " + team_num + ", " + auto_high_made + ", " + auto_high_missed + ", " + auto_low_made +
+              ", " + auto_low_missed + ", " + baseline_cross + ", " + auto_hopper_intake + ", " + auto_floor_gear_intake +
+              ", " + auto_floor_ball_intake + ", " + auto_gears_scored + ", " + auto_gears_missed + ", " + tele_high_made +
+              ", " + tele_high_missed + ", " + tele_low_made + ", " + tele_low_missed + ", " + num_cycles + ", " + tele_floor_ball_intake +
+              ", " + hp_ball_intake + ", " + tele_hopper_intake + ", " + tele_gears_scored + ", " + tele_gears_missed + ", " + tele_floor_gear_intake +
+              ", " + hp_gear_intake + ", " + fouls + ", " + dead + ", " + climb + ", " + failed_climb + "," + auto_kpa + ", " + tot_kpa + ");"
 
             connection.query(matches_sql_v2, function(err) {
                 if(err)
@@ -1295,7 +1301,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
                 }
                 else
                 {
-                    // updateTeams(team_number);
+                    updateTeams(team_num);
                     most_recent = team_num;
                     res.redirect('/data-entry');
                 }
@@ -1305,9 +1311,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
         });
 
 
-		function updateContribScores(team_number)
+		function updateContribScores(team_num)
 		{
-			grab_data_sql = "SELECT * FROM matches WHERE team_number='"+ team_number +"'";
+			grab_data_sql = "SELECT * FROM matches WHERE team_num='"+ team_num +"'";
 
 			connection.query(grab_data_sql, function(err, rows, fields) {
                 console.log(err);
@@ -1354,7 +1360,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 					console.log(lb);
 					var dis_contributed_score = rows[x].auton_score + (5*(a1 + a2 + b1 + b2 + c1 + c2 + d1 + d2 + lb) + 2*rows[x].tele_low_made + 5*rows[x].tele_high_made + 15*rows[x].tele_hang + 5*rows[x].tele_challenge);
 					console.log(dis_contributed_score);
-					var update_sql_script = "UPDATE matches SET contributed_score='"+ dis_contributed_score +"' WHERE team_number='"+ team_number +"' AND match_number='"+ rows[x].match_number +"'";
+					var update_sql_script = "UPDATE matches SET contributed_score='"+ dis_contributed_score +"' WHERE team_num='"+ team_num +"' AND match_number='"+ rows[x].match_number +"'";
 
 
 					connection.query(update_sql_script);
@@ -1363,23 +1369,102 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 
 		}
 
-        function updateTeams(team_number)
+        function updateTeams(team_num)
         {
-            console.log("updating data into teams for team: " + team_number);
-            var team_sql = "UPDATE teams SET                                                                                                 num_matches=(SELECT COUNT(*)  FROM matches WHERE team_number='"+ team_number +"'),                                                            avg_contrib_score=(SELECT AVG(contributed_score) FROM matches WHERE team_number='"+ team_number +"'),                                         avg_floor_intakes=(SELECT AVG(tele_floor_intake) FROM matches WHERE team_number='"+ team_number +"'),                                         perc_high_made=100*((SELECT SUM(tele_high_made) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(tele_high_made)+SUM(tele_high_missed) FROM matches WHERE team_number='"+ team_number +"')),                                               total_high_made=(SELECT SUM(tele_high_made) FROM matches WHERE team_number='"+ team_number +"'),                                             total_high_attempts=(SELECT SUM(tele_high_made)+SUM(tele_high_missed) FROM matches WHERE team_number='"+ team_number +"'),                   avg_high_made=(SELECT AVG(tele_high_made) FROM matches WHERE team_number='"+ team_number +"'),                                             avg_high_attempts=(SELECT AVG(tele_high_made + tele_high_missed) FROM matches WHERE team_number='"+ team_number +"'), avg_low_made=(SELECT AVG(tele_low_made) FROM matches WHERE team_number='"+ team_number +"'),                                             avg_low_attempts=(SELECT AVG(tele_low_made + tele_low_missed) FROM matches WHERE team_number='"+ team_number +"'),                     perc_low_goals=100*((SELECT SUM(tele_low_made) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(tele_low_made)+SUM(tele_low_missed) FROM matches WHERE team_number='"+ team_number +"')),                                                 total_low_made=(SELECT SUM(tele_low_made) FROM matches WHERE team_number='"+ team_number +"'),                                                total_low_attempts=(SELECT SUM(tele_low_made)+SUM(tele_low_missed) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                         perc_a1_cross=100*(SELECT SUM(a1_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(a1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_a1_successful=(SELECT SUM(a1_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_a1_attempts=(SELECT SUM(a1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_a1_stuck=(SELECT SUM(a1_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_a1_assisted=(SELECT SUM(a1_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                                                                                                                                                             perc_a2_cross=100*(SELECT SUM(a2_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(a2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_a2_successful=(SELECT SUM(a2_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_a2_attempts=(SELECT SUM(a2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_a2_stuck=(SELECT SUM(a2_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_a2_assisted=(SELECT SUM(a2_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                                                                                                                                                               perc_b1_cross=100*(SELECT SUM(b1_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(b1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_b1_successful=(SELECT SUM(b1_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_b1_attempts=(SELECT SUM(b1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_b1_stuck=(SELECT SUM(b1_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_b1_assisted=(SELECT SUM(b1_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                                                                                                                                                               perc_b2_cross=100*(SELECT SUM(b2_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(b2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_b2_successful=(SELECT SUM(b2_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_b2_attempts=(SELECT SUM(b2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_b2_stuck=(SELECT SUM(b2_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_b2_assisted=(SELECT SUM(b2_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                                                                                                                                                               perc_c1_cross=100*(SELECT SUM(c1_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(c1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_c1_successful=(SELECT SUM(c1_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_c1_attempts=(SELECT SUM(c1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_c1_stuck=(SELECT SUM(c1_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_c1_assisted=(SELECT SUM(c1_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                                                                                                                                                               perc_c2_cross=100*(SELECT SUM(c2_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(c2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_c2_successful=(SELECT SUM(c2_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_c2_attempts=(SELECT SUM(c2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_c2_stuck=(SELECT SUM(c2_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_c2_assisted=(SELECT SUM(c2_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                                                                                                                                                               perc_d1_cross=100*(SELECT SUM(d1_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(d1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_d1_successful=(SELECT SUM(d1_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_d1_attempts=(SELECT SUM(d1_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_d1_stuck=(SELECT SUM(d1_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                       tot_d1_assisted=(SELECT SUM(d1_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                             perc_d2_cross=100*(SELECT SUM(d2_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(d2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_d2_successful=(SELECT SUM(d2_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_d2_attempts=(SELECT SUM(d2_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_d2_stuck=(SELECT SUM(d2_stuck) FROM matches WHERE team_number='" + team_number + "'), ";
+            console.log("updating data into teams for team: " + team_num);
 
-        team_sql += "tot_d2_assisted=(SELECT SUM(d2_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                               perc_lb_cross=100*(SELECT SUM(lb_successful) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(lb_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                                                         tot_lb_successful=(SELECT SUM(lb_successful) FROM matches WHERE team_number='"+ team_number +"'),                                             tot_lb_attempts=(SELECT SUM(lb_attempts) FROM matches WHERE team_number='"+ team_number +"'),                                                 tot_lb_stuck=(SELECT SUM(lb_stuck) FROM matches WHERE team_number='" + team_number + "'),                                           tot_lb_assisted=(SELECT SUM(lb_assists) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                               perc_hangs=100*(SELECT SUM(tele_hang) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(tele_hang)+SUM(tele_hang_failed) FROM matches WHERE team_number='"+ team_number +"'),                                                                                               total_hangs=(SELECT SUM(tele_hang) FROM matches WHERE team_number='"+ team_number +"'),                                                       total_hang_attempts=(SELECT SUM(tele_hang)+SUM(tele_hang_failed) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                       perc_challenges=100*(SELECT SUM(tele_challenge) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(tele_challenge)+SUM(tele_challenge_failed) FROM matches WHERE team_number='"+ team_number +"'),                                            total_challenges=(SELECT SUM(tele_challenge) FROM matches WHERE team_number='"+ team_number +"'),                                             total_challenge_attempts=(SELECT SUM(tele_challenge)+SUM(tele_challenge_failed) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                      total_knockouts=(SELECT SUM(tele_knock_out) FROM matches WHERE team_number='"+ team_number +"'),                                             total_fouls=(SELECT SUM(fouls_noticed) FROM matches WHERE team_number='"+ team_number +"'),                                                   avg_driver_rating=(SELECT AVG(driver_rating) FROM matches WHERE team_number='"+ team_number +"'),                                            avg_bully_rating=(SELECT AVG(bully_rating) FROM matches WHERE team_number='"+ team_number +"' AND bully_rating<>0),                            avg_auton_score=(SELECT AVG(auton_score) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                                                                                       auton_a1_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='PC'),          auton_a2_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='CF'),         auton_b1_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='M'),         auton_b2_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='R'),          auton_c1_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='DB'),         auton_c2_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='SP'),         auton_d1_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RW'),          auton_d2_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RT'),         auton_lb_attempts=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='LB'),                  auton_a1=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='PC' AND auton_defense_total<>'0'),    auton_a2=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='CF' AND auton_defense_total<>'0'),   auton_b1=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='M' AND auton_defense_total<>'0'),     auton_b2=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='R' AND auton_defense_total<>'0'),      auton_c1=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='DB' AND auton_defense_total<>'0'),   auton_c2=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='SP' AND auton_defense_total<>'0'),   auton_d1=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RW' AND auton_defense_total<>'0'),   auton_d2=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RT' AND auton_defense_total<>'0'),   auton_lb=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='LB' AND auton_defense_total<>'0'),   perc_auton_high=100*((SELECT SUM(auton_high) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(auton_high)+SUM(auton_high_missed) FROM matches WHERE team_number='"+ team_number +"')),                                               auton_high_made=(SELECT SUM(auton_high) FROM matches WHERE team_number='"+ team_number +"'),                                             auton_high_attempts=(SELECT SUM(auton_high)+SUM(auton_high_missed) FROM matches WHERE team_number='"+ team_number +"'),                    perc_auton_low=100*((SELECT SUM(auton_low) FROM matches WHERE team_number='"+ team_number +"')/(SELECT SUM(auton_low)+SUM(auton_low_missed) FROM matches WHERE team_number='"+ team_number +"')),                                                                               auton_low_made=(SELECT SUM(auton_low) FROM matches WHERE team_number='"+ team_number +"'),                                                auton_low_attempts=(SELECT SUM(auton_low)+SUM(auton_low_missed) FROM matches WHERE team_number='"+ team_number +"'),      auton_reaches_total=(SELECT COUNT(auton_reach) FROM matches WHERE team_number='"+ team_number +"' AND auton_reach='1'),                        avg_a1_speed=((SELECT SUM(a1_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(a1_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_a2_speed=((SELECT SUM(a2_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(a2_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_b1_speed=((SELECT SUM(b1_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(b1_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_b2_speed=((SELECT SUM(b2_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(b2_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_c1_speed=((SELECT SUM(c1_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(c1_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_c2_speed=((SELECT SUM(c2_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(c2_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_d1_speed=((SELECT SUM(d1_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(d1_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_d2_speed=((SELECT SUM(d2_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(d2_successful) FROM matches WHERE team_number='"+ team_number +"')),                                                                                                       avg_lb_speed=((SELECT SUM(lb_total) FROM matches WHERE team_number='"+ team_number +"') / (SELECT SUM(lb_successful) FROM matches WHERE team_number='"+ team_number +"')),";
+            var team_sql = "UPDATE teams SET num_matches=(SELECT COUNT(*) FROM matches WHERE team_num=" + team_num + "), " +
+            "perc_auto_gears_scored=100*(SELECT SUM(auto_gears_scored)/(SUM(auto_gears_missed)+SUM(auto_gears_scored)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_gears_scored=(SELECT SUM(auto_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_gears_attempts=(SELECT SUM(auto_gears_scored)+SUM(auto_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_auto_gears_scored=(SELECT AVG(auto_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_auto_gears_attempts=(SELECT AVG(auto_gears_scored+auto_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
 
-            team_sql += "                                                                                                                     total_stucks=(SELECT SUM(a1_stuck)+SUM(a2_stuck)+SUM(b1_stuck)+SUM(b2_stuck)+SUM(c1_stuck)+SUM(c2_stuck)+SUM(d1_stuck)+SUM(d2_stuck)+SUM(lb_stuck) FROM matches WHERE team_number='"+ team_number +"'),                                                                                               total_terrains=(SELECT SUM(b1_successful)+SUM(b2_successful)+SUM(d1_successful)+SUM(d2_successful) FROM matches WHERE team_number='"+ team_number +"'),                                                                                                                 total_defenses=(SELECT SUM(a1_successful)+SUM(a2_successful)+SUM(b1_successful)+SUM(b2_successful)+SUM(c1_successful)+SUM(c2_successful)+SUM(d1_successful)+SUM(d2_successful)+SUM(lb_successful) FROM matches WHERE team_number='"+ team_number +"'),                                                           auton_a1_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='PC' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='PC')),               auton_a2_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='CF' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='CF')),               auton_b1_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='M' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='M')),               auton_b2_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='R' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='R')),               auton_c1_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='DB' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='DB')),               auton_c2_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='SP' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='SP')),               auton_d1_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RW' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RW')),               auton_d2_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RT' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RT')),               auton_lb_perc=100*((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='LB' AND auton_defense_total<>'0')/(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='LB')), tot_dead=(SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND dead='1')             WHERE team_number='"+ team_number +"'";
+            "perc_auto_high_made=100*(SELECT SUM(auto_high_made)/(SUM(auto_high_missed)+SUM(auto_high_made)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_high_made=(SELECT SUM(auto_high_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_high_attempts=(SELECT SUM(auto_high_made)+SUM(auto_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_auto_high_made=(SELECT AVG(auto_high_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_auto_high_attempts=(SELECT AVG(auto_high_made+auto_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "perc_auto_low_made=100*(SELECT SUM(auto_low_made)/(SUM(auto_low_missed)+SUM(auto_low_made)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_low_made=(SELECT SUM(auto_low_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_low_attempts=(SELECT SUM(auto_low_made)+SUM(auto_low_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_auto_low_made=(SELECT AVG(auto_low_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_auto_low_attempts=(SELECT AVG(auto_low_made+auto_low_missed) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "tot_baseline_cross=(SELECT SUM(baseline_cross) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_auto_hopper_intake=(SELECT AVG(auto_hopper_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_hopper_intake=(SELECT SUM(auto_hopper_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_auto_floor_gear_intake=(SELECT AVG(auto_floor_gear_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_floor_gear_intake=(SELECT SUM(auto_floor_gear_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_auto_floor_ball_intake=(SELECT AVG(auto_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_auto_floor_ball_intake=(SELECT SUM(auto_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_num_cycles=(SELECT AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_cycle_time=135/(SELECT AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "perc_tele_high_made=100*(SELECT SUM(tele_high_made)/(SUM(tele_high_missed)+SUM(tele_high_made)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_high_made=(SELECT SUM(tele_high_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_high_attempts=(SELECT SUM(tele_high_made)+SUM(tele_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_high_made=(SELECT AVG(tele_high_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_high_attempts=(SELECT AVG(tele_high_made+tele_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_high_made_per_cycle=(SELECT AVG(tele_high_made)/AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "perc_tele_low_made=100*(SELECT SUM(tele_low_made)/(SUM(tele_low_missed)+SUM(tele_low_made)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_low_made=(SELECT SUM(tele_low_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_low_attempts=(SELECT SUM(tele_low_made)+SUM(tele_low_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_low_made=(SELECT AVG(tele_low_made) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_low_attempts=(SELECT AVG(tele_low_made+tele_low_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_low_made_per_cycle=(SELECT AVG(tele_low_made)/AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "perc_tele_gears_scored=100*(SELECT SUM(tele_gears_scored)/(SUM(tele_gears_missed)+SUM(tele_gears_scored)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_gears_scored=(SELECT SUM(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_gears_scored=(SELECT SUM(tele_gears_scored)+SUM(tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_gears_scored=(SELECT AVG(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_gears_scored=(SELECT AVG(tele_gears_scored+tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_gears_scored_per_cycle=(SELECT AVG(tele_gears_scored)/AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_tele_floor_ball_intake=(SELECT AVG(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_floor_ball_intake=(SELECT SUM(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_tele_hopper_intake=(SELECT AVG(tele_hopper_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_hopper_intake=(SELECT SUM(tele_hopper_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_tele_floor_gear_intake=(SELECT AVG(tele_floor_gear_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_floor_gear_intake=(SELECT SUM(tele_floor_gear_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_hp_ball_intake=(SELECT AVG(hp_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_hp_ball_intake=(SELECT SUM(hp_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_hp_gear_intake=(SELECT AVG(hp_gear_intake) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_hp_gear_intake=(SELECT SUM(hp_gear_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "perc_climb=100*(SELECT SUM(climb)/(SUM(failed_climb)+SUM(climb)) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_climb=(SELECT SUM(climb) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_climb_attempts=(SELECT SUM(climb)+SUM(failed_climb) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "tot_fouls=(SELECT SUM(fouls) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_deads=(SELECT SUM(dead) FROM matches WHERE team_num=" + team_num + "), " +
+
+            "avg_auto_contrib_kpa=(SELECT AVG(auto_contrib_kpa) FROM matches WHERE team_num=" + team_num + "), "  +
+            "avg_contrib_kpa=(SELECT AVG(contrib_kpa) FROM matches WHERE team_num=" + team_num + ") " +
+
+
+            "WHERE team_num=" + team_num;
+
             connection.query(team_sql, function(err) {
+              if(err)
                 console.log(err);
             });
-            var next_sql = "UPDATE teams SET total_auto_crossings=((SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='PC' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='CF' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='M' AND auton_defense_total<>'0')  + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='R' AND auton_defense_total<>'0')  + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='DB' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='SP' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RW' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='RT' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_number='"+ team_number +"' AND auton_defense_crossed='LB' AND auton_defense_total<>'0')) WHERE team_number='"+ team_number +"'";
+            // var next_sql = "UPDATE teams SET total_auto_crossings=((SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='PC' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='CF' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='M' AND auton_defense_total<>'0')  + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='R' AND auton_defense_total<>'0')  + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='DB' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='SP' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='RW' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='RT' AND auton_defense_total<>'0') + (SELECT COUNT(*) FROM matches WHERE team_num='"+ team_num +"' AND auton_defense_crossed='LB' AND auton_defense_total<>'0')) WHERE team_num='"+ team_num +"'";
 
-            connection.query(next_sql, function(err) {
-                console.log(err);
-
-            });
+            // connection.query(next_sql, function(err) {
+            //     console.log(err);
+            //
+            // });
         }
 
 
