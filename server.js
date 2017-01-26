@@ -1,8 +1,9 @@
 // server.js
 // only thing that ever needs to be changed is IP address of 'host' in pool variable to location of server computer
+
 var mysql = require('mysql');
 var rest = require("./REST.js");
-var md5 = require("MD5");
+var morgan = require("morgan");
 var express = require('express');
 var bodyParser = require("body-parser"); // Body parser for fetch posted data
 var app = express();
@@ -55,9 +56,10 @@ REST.prototype.configureExpress = function(connection)
     var self = this;
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
+    app.use(morgan("dev"));
     var router = express.Router();
     app.use('/', router);
-    var rest_router = new rest(router, connection, md5);
+    var rest_router = new rest(router, connection);
     self.startServer();
 }
 
@@ -65,7 +67,7 @@ REST.prototype.startServer = function()
 {
     var port = Number(process.env.PORT || 8000);
     app.listen(port, function() {
-        console.log('FRC Scout servers running on port 8080');
+        console.log('FRC Scout servers running on port 8000');
     });
 }
 

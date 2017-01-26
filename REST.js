@@ -1,49 +1,138 @@
 //where all the page connections happen and back-end javascript
 var mysql = require("mysql");
+var fs = require("fs");
 
-
-
-function REST_ROUTER(router, connection, md5)
+function REST_ROUTER(router, connection)
 {
     var self = this;
-    self.handleRoutes(router, connection, md5);
+    self.handleRoutes(router, connection);
 }
 
-REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
+REST_ROUTER.prototype.handleRoutes = function(router, connection)
 {
 
         var most_recent = 0;
+        var query_bool = 0;
+        var query_res = "";
 
         // index page
-        router.get('/', function(req, res) {       //PAGE RENDER
-            var team_table = "";
-            var team_score_table = "";
-            var get_teams = "SELECT * FROM teams";
-
-            //TEAM QUERY
-            connection.query(get_teams, function(err,rows,fields) {
-                for(var x in rows)
-                {
-                    team_table += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
-                }
-
-            });
-
-            //CONTRIB SCORE QUERY
-            var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_contrib_score DESC, team_num ASC";
-            connection.query(get_contrib_score_rank, function(err, rows, fields) {
-                for(var x in rows)
-                {
-                    team_score_table += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].avg_contrib_score +"</td><td>"+ rows[x].avg_driver_rating +"</td></tr>";
-                }
-                res.render('pages/index', {
-                    teams1: team_table,
-                    teams2: team_score_table
-                });
-            });
-
-
+      router.get('/', function(req, res) {       //PAGE RENDER
+        var team_list = "";
+        var score_list = "";
+        var get_teams = "SELECT * FROM teams";
+        //TEAM QUERY
+        connection.query(get_teams, function(err,rows,fields) {
+          for(var x in rows)
+          {
+            team_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
+          }
         });
+        //CONTRIB SCORE QUERY
+        var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_contrib_kpa DESC, team_num ASC";
+        connection.query(get_contrib_score_rank, function(err, rows, fields) {
+          for(var x in rows)
+          {
+            score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].avg_contrib_kpa +"</td></tr>";
+          }
+          res.render('pages/index', {
+            team_list: team_list,
+            score_list: score_list
+          });
+        });
+      });
+
+      router.get("/sql", function(req, res) {
+        var message = "";
+        if(query_bool == -1)
+          message = "<div class=\"alert alert-danger\" role=\"alert\"><p><b>Oh snap</b>, looks like there's a mistake in your query. Data not queried.</p></div>";
+        else if(query_bool != -1 && query_bool != 0)
+          message = "<div class=\"alert alert-success\" role=\"alert\"><p>Data has been <b>successfully</b> queried.</p></div>";
+        res.render("pages/sql", {
+          message: message,
+          result: query_res
+        });
+        if(query_bool == 1)
+        {
+          query_res = "";
+          query_bool = 0;
+        }
+      });
+      router.post("/query", function(req, res) {
+        var sql = req.body.query;
+        query_res = "";
+        connection.query(sql, function(err, rows, fields) {
+        if(err)
+        {
+          console.log(err);
+          query_bool = -1;
+        }
+        else
+        {
+          query_bool = 1;
+          query_res += "<tr>";
+          for(var p in rows[0])
+          {
+            query_res += "<th>" + p + "</th>";
+          }
+          for(var i in rows)
+          {
+            query_res += "</tr><tr>";
+            for(var p in rows[i])
+            {
+              query_res += "<td>" + rows[i][p] + "</td>";
+            }
+            query_res += "</tr>";
+          }
+        }
+        res.redirect("/sql");
+      });
+    });
+    router.get("/export", function(req, res) {
+      var teams_sql = "SELECT * FROM teams";
+      var filename = "teams.csv";
+      var data = "";
+      connection.query(teams_sql, function(err, rows, fields) {
+        for(var p in rows[0])
+        {
+          data += p + ", ";
+        }
+        data = data.slice(0, data.length - 2); // Remove the extra comma
+        data += "\n";
+        for(var i in rows)
+        {
+          for(var p in rows[i])
+          {
+            data += rows[i][p] + ", ";
+          }
+          data = data.slice(0, data.length - 2); // Remove the extra comma
+          data += "\n";
+        }
+        fs.writeFile(filename, data, function(err) {
+          console.log(err ? err : "File saved to " + __dirname);
+          res.download(__dirname + "/teams.csv");
+        });
+      });
+    });
+
+    router.get("/event", function(req, res) {
+      var date = new Date();
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var date_str = "2017-" + month + "-" + day;
+      var events = "";
+      tba.getEventList(function(err, list_of_teams) {
+        for(var x in list_of_teams) {
+          var event_date = list_of_teams[x].start_date.split("-");
+          if((Number(event_date[1]) > Number(month)) || (Number(event_date[1]) == Number(month) && Number(event_date[2]) > Number(day))) {
+            events += "<option>" + list_of_teams[x].event_code + "-" + list_of_teams[x].name + "</option>\n";
+          }
+        }
+
+        res.render("pages/event", {
+          events: events
+        });
+      });
+    });
 
 		router.get('/alliance/:team_1,:team_2,:team_3', function(req, res) {
 			console.log(req.params.team_1);
@@ -900,203 +989,93 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             var team_name = "";
             var next_team_num = 0;
             var previous_team_num = 0;
-            var avg_score = 0;
-            var avg_auton_score = 0;
-            var perc_high_made = 0;
-            var high_made = 0;
-            var low_made = 0;
-            var high_attempts = 0;
-            var low_attempts = 0;
-            var auton_defense_crossings = [0,0,0,0,0,0,0,0,0];
-            var auton_defense_attempts = [0,0,0,0,0,0,0,0,0];
-            var perferred_defense = "none";
-            var auton_high_made = 0;
-            var auton_high_attempts = 0;
-            var auton_low_made = 0;
-            var auton_low_attempts = 0;
-            var avg_floor_intakes = 0;
-            var avg_hp_intakes = 0;
-            var knockouts = 0;
-            var avg_bully_rating = 0;
-            var fouls = 0;
-            var deads = 0;
-            var a1_success = 0;
-            var a1_attempts = 0;
-            var a2_success = 0;
-            var a2_attempts = 0;
-            var b1_success = 0;
-            var b1_attempts = 0;
-            var b2_success = 0;
-            var b2_attempts = 0;
-            var c1_success = 0;
-            var c1_attempts = 0;
-            var c2_success = 0;
-            var c2_attempts = 0;
-            var d1_success = 0;
-            var d1_attempts = 0;
-            var d2_success = 0;
-            var d2_attempts = 0;
-            var lb_success = 0;
-            var lb_attempts = 0;
+            var avg_auto_gears_scored = 0;
+            var avg_auto_gears_attempts = 0;
+            var avg_auto_high_made = 0;
+            var avg_auto_high_attempts = 0;
+            var avg_auto_low_made = 0;
+            var avg_auto_low_attempts = 0;
+            var tot_baseline_cross = 0;
+            var avg_auto_hopper_intake = 0;
+            var avg_auto_floor_gear_intake = 0;
+            var avg_auto_floor_ball_intake = 0;
+            var avg_auto_contrib_kpa = 0;
 
-            var a1_speed = 0;
-            var a2_speed = 0;
-            var b1_speed = 0;
-            var b2_speed = 0;
-            var c1_speed = 0;
-            var c2_speed = 0;
-            var d1_speed = 0;
-            var d2_speed = 0;
-            var lb_speed = 0;
+            var avg_num_cycles = 0;
+            var avg_cycle_time = 0;
+            var avg_tele_high_made = 0;
+            var avg_tele_high_attempts = 0;
+            var avg_tele_low_made = 0;
+            var avg_tele_low_attempts = 0;
+            var avg_tele_gears_scored = 0;
+            var avg_tele_gears_attempts = 0;
+            var avg_tele_floor_ball_intake = 0;
+            var avg_tele_floor_gear_intake = 0;
+            var avg_tele_hopper_intake= 0;
+            var avg_hp_ball_intake = 0;
+            var avg_hp_gear_intake = 0;
+            var tot_climb = 0;
+            var tot_climb_attempts = 0;
+            var tot_fouls = 0;
+            var tot_deads = 0;
+            var avg_contrib_kpa = 0;
 
-            var a1_stuck = 0;
-            var a2_stuck = 0;
-            var b1_stuck = 0;
-            var b2_stuck = 0;
-            var c1_stuck = 0;
-            var c2_stuck = 0;
-            var d1_stuck = 0;
-            var d2_stuck = 0;
-            var lb_stuck = 0;
-
-			var a1_assists = 0;
-            var a2_assists = 0;
-            var b1_assists = 0;
-            var b2_assists = 0;
-            var c1_assists = 0;
-            var c2_assists = 0;
-            var d1_assists = 0;
-            var d2_assists = 0;
-            var lb_assists = 0;
-
-            var hang_made = 0;
-            var hang_attempts = 0;
-            var challenge_made = 0;
-            var challenge_attempts = 0;
-
-            var auton_reaches = 0;
             var no_autos = 0;
-
             var trend_labels = "";
-            var trend_data = "";
+            var gears_trend = "";
             var high_goal_trend = "";
-			updateContribScores(team_num);
+			//updateContribScores(team_num);
             updateTeams(team_num);
 
 
             var get_data = "SELECT * FROM teams WHERE team_num='"+ team_num +"'";
             var next_team = "SELECT * FROM teams WHERE team_num > '"+ team_num +"' ORDER BY team_num LIMIT 1";
             var previous_team = "SELECT * FROM teams WHERE team_num < '"+ team_num +"' ORDER BY team_num DESC LIMIT 1";
-            var get_graph_data = "SELECT * FROM matches WHERE team_num='"+ team_num +"' ORDER BY match_number";
+            var get_graph_data = "SELECT * FROM matches WHERE team_num='"+ team_num +"' ORDER BY match_num";
 
             connection.query(get_data, function(err, rows, fields) {
-                team_name = rows[0].team_name;
-                avg_score = rows[0].avg_contrib_score;
-                avg_auton_score = rows[0].avg_auton_score;
-                perc_high_made = rows[0].perc_high_made;
-                auton_defense_crossings[0] = rows[0].auton_a1;
-                auton_defense_crossings[1] = rows[0].auton_a2;
-                auton_defense_crossings[2] = rows[0].auton_b1;
-                auton_defense_crossings[3] = rows[0].auton_b2;
-                auton_defense_crossings[4] = rows[0].auton_c1;
-                auton_defense_crossings[5] = rows[0].auton_c2;
-                auton_defense_crossings[6] = rows[0].auton_d1;
-                auton_defense_crossings[7] = rows[0].auton_d2;
-                auton_defense_crossings[8] = rows[0].auton_lb;
-                auton_defense_attempts[0] = rows[0].auton_a1_attempts;
-                auton_defense_attempts[1] = rows[0].auton_a2_attempts;
-                auton_defense_attempts[2] = rows[0].auton_b1_attempts;
-                auton_defense_attempts[3] = rows[0].auton_b2_attempts;
-                auton_defense_attempts[4] = rows[0].auton_c1_attempts;
-                auton_defense_attempts[5] = rows[0].auton_c2_attempts;
-                auton_defense_attempts[6] = rows[0].auton_d1_attempts;
-                auton_defense_attempts[7] = rows[0].auton_d2_attempts;
-                auton_defense_attempts[8] = rows[0].auton_lb_attempts;
-                auton_high_made = rows[0].auton_high_made;
-                auton_high_attempts = rows[0].auton_high_attempts;
-                auton_low_made = rows[0].auton_low_made;
-                auton_low_attempts = rows[0].auton_low_attempts;
-                high_made = rows[0].avg_high_made;
-                low_made = rows[0].avg_low_made;
-                high_attempts = rows[0].avg_high_attempts;
-                low_attempts = rows[0].avg_low_attempts;
-                avg_floor_intakes = rows[0].avg_floor_intakes;
-                avg_hp_intakes = rows[0].avg_hp_intakes;
-                avg_bully_rating = rows[0].avg_bully_rating;
-                knockouts = rows[0].total_knockouts;
-                fouls = rows[0].total_fouls;
-                deads = rows[0].tot_dead;
+              team_name = rows[0].team_name;
+              avg_auto_gears_scored = rows[0].avg_auto_gears_scored;
+              avg_auto_gears_attempts = rows[0].avg_auto_gears_attempts;
+              avg_auto_high_made = rows[0].avg_auto_high_made;
+              avg_auto_high_attempts = rows[0].avg_auto_high_attempts;
+              avg_auto_low_made = rows[0].avg_auto_low_made;
+              avg_auto_low_attempts = rows[0].avg_auto_low_attempts;
+              tot_baseline_cross = rows[0].tot_baseline_cross;
+              avg_auto_hopper_intake = rows[0].avg_auto_hopper_intake;
+              avg_auto_floor_gear_intake = rows[0].avg_auto_floor_gear_intake;
+              avg_auto_floor_ball_intake = rows[0].avg_auto_floor_ball_intake;
+              avg_auto_contrib_kpa = rows[0].avg_auto_contrib_kpa;
 
-                a1_success = rows[0].tot_a1_successful;
-                a1_attempts = rows[0].tot_a1_attempts;
-                a2_success = rows[0].tot_a2_successful;
-                a2_attempts = rows[0].tot_a2_attempts;
-                b1_success = rows[0].tot_b1_successful;
-                b1_attempts = rows[0].tot_b1_attempts;
-                b2_success = rows[0].tot_b2_successful;
-                b2_attempts = rows[0].tot_b2_attempts;
-                c1_success = rows[0].tot_c1_successful;
-                c1_attempts = rows[0].tot_c1_attempts;
-                c2_success = rows[0].tot_c2_successful;
-                c2_attempts = rows[0].tot_c2_attempts;
-                d1_success = rows[0].tot_d1_successful;
-                d1_attempts = rows[0].tot_d1_attempts;
-                d2_success = rows[0].tot_d2_successful;
-                d2_attempts = rows[0].tot_d2_attempts;
-                lb_success = rows[0].tot_lb_successful;
-                lb_attempts = rows[0].tot_lb_attempts;
-
-                a1_speed = rows[0].avg_a1_speed;
-                a2_speed = rows[0].avg_a2_speed;
-                b1_speed = rows[0].avg_b1_speed;
-                b2_speed = rows[0].avg_b2_speed;
-                c1_speed = rows[0].avg_c1_speed;
-                c2_speed = rows[0].avg_c2_speed;
-                d1_speed = rows[0].avg_d1_speed;
-                d2_speed = rows[0].avg_d2_speed;
-                lb_speed = rows[0].avg_lb_speed;
-
-                a1_stuck = rows[0].tot_a1_stuck;
-                a2_stuck = rows[0].tot_a2_stuck;
-                b1_stuck = rows[0].tot_b1_stuck;
-                b2_stuck = rows[0].tot_b2_stuck;
-                c1_stuck = rows[0].tot_c1_stuck;
-                c2_stuck = rows[0].tot_c2_stuck;
-                d1_stuck = rows[0].tot_d1_stuck;
-                d2_stuck = rows[0].tot_d2_stuck;
-                lb_stuck = rows[0].tot_lb_stuck;
-
-				a1_assists = rows[0].tot_a1_assisted;
-                a2_assists = rows[0].tot_a2_assisted;
-                b1_assists = rows[0].tot_b1_assisted;
-                b2_assists = rows[0].tot_b2_assisted;
-                c1_assists = rows[0].tot_c1_assisted;
-                c2_assists = rows[0].tot_c2_assisted;
-                d1_assists = rows[0].tot_d1_assisted;
-                d2_assists = rows[0].tot_d2_assisted;
-                lb_assists = rows[0].tot_lb_assisted;
-
-                hang_made = rows[0].total_hangs;
-                hang_attempts = rows[0].total_hang_attempts;
-                challenge_made = rows[0].total_challenges;
-                challenge_attempts = rows[0].total_challenge_attempts;
-
-                auton_reaches = rows[0].auton_reaches_total;
-
-
-
+              avg_num_cycles = rows[0].avg_num_cycles;
+              avg_cycle_time = rows[0].avg_cycle_time;
+              avg_tele_high_made = rows[0].avg_tele_high_made;
+              avg_tele_high_attempts = rows[0].avg_tele_high_attempts;
+              avg_tele_low_made = rows[0].avg_tele_low_made;
+              avg_tele_low_attempts = rows[0].avg_tele_low_attempts;
+              avg_tele_gears_scored = rows[0].avg_tele_gears_scored;
+              avg_tele_gears_attempts = rows[0].avg_tele_gears_attempts;
+              avg_tele_floor_ball_intake = rows[0].avg_tele_floor_ball_intake;
+              avg_tele_floor_gear_intake = rows[0].avg_tele_floor_gear_intake;
+              avg_tele_hopper_intake = rows[0].avg_tele_hopper_intake;
+              avg_hp_ball_intake = rows[0].avg_hp_ball_intake;
+              avg_hp_gear_intake = rows[0].avg_hp_gear_intake;
+              tot_climb = rows[0].tot_climb;
+              tot_climb_attempts = rows[0].tot_climb_attempts;
+              tot_fouls = rows[0].tot_fouls;
+              tot_deads = rows[0].tot_deads;
+              avg_contrib_kpa = rows[0].avg_contrib_kpa;
             });
 
             var no_auto_sql = "SELECT * FROM matches WHERE team_num='"+ team_num +"'";
             connection.query(no_auto_sql, function(err, rows, fields) {
-                for(var x in rows)
+              for(var x in rows)
+              {
+                if(rows[x].auto_contrib_kpa == 0 && rows[x].auto_gears_scored == 0 && rows[x].baseline_cross == 0)
                 {
-                    if(rows[x].auton_score == '0')
-                    {
-                        no_autos++;
-                    }
+                  no_autos++;
                 }
-
+              }
             });
 
 
@@ -1126,106 +1105,54 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
             });
 
             connection.query(get_graph_data, function(err, rows, fields){
+                // console.log(rows);
                 for(var x in rows)
                 {
-                    trend_labels += rows[x].match_number + ", ";
-                    trend_data += rows[x].contributed_score + ", ";
+                    trend_labels += rows[x].match_num + ", ";
+                    gears_trend += rows[x].tele_gears_scored + ", ";
                     high_goal_trend += rows[x].tele_high_made + ", ";
                 }
-                console.log(high_goal_trend);
+                // console.log(high_goal_trend);
+                // console.log(gears_trend);
 
                 res.render('pages/team', {
                     team_num: team_num,
                     team_name: team_name,
-                    next_team: next_team_num,
-                    previous_team: previous_team_num,
-                    avg_score: avg_score,
-                    avg_auton_score: avg_auton_score,
-                    auton_pc_crosses: auton_defense_crossings[0],
-                    auton_cf_crosses: auton_defense_crossings[1],
-                    auton_m_crosses: auton_defense_crossings[2],
-                    auton_r_crosses: auton_defense_crossings[3],
-                    auton_db_crosses: auton_defense_crossings[4],
-                    auton_sp_crosses: auton_defense_crossings[5],
-                    auton_rw_crosses: auton_defense_crossings[6],
-                    auton_rt_crosses: auton_defense_crossings[7],
-                    auton_lb_crosses: auton_defense_crossings[8],
-                    auton_pc_attempts: auton_defense_attempts[0],
-                    auton_cf_attempts: auton_defense_attempts[1],
-                    auton_m_attempts: auton_defense_attempts[2],
-                    auton_r_attempts: auton_defense_attempts[3],
-                    auton_db_attempts: auton_defense_attempts[4],
-                    auton_sp_attempts: auton_defense_attempts[5],
-                    auton_rw_attempts: auton_defense_attempts[6],
-                    auton_rt_attempts: auton_defense_attempts[7],
-                    auton_lb_attempts: auton_defense_attempts[8],
-                    auton_high_made: auton_high_made,
-                    auton_high_attempts: auton_high_attempts,
-                    auton_low_made: auton_low_made,
-                    auton_low_attempts: auton_low_attempts,
-                    high_made: high_made,
-                    high_attempts: high_attempts,
-                    low_made: low_made,
-                    low_attempts: low_attempts,
-                    avg_intakes: avg_floor_intakes,
-                    avg_hp_intakes: avg_hp_intakes,
-                    knockouts: knockouts,
-                    trend_data: trend_data,
-                    bully_rating: avg_bully_rating,
-                    fouls: fouls,
-                    deads: deads,
-                    a1_success: a1_success,
-                    a1_attempts: a1_attempts,
-                    a2_success: a2_success,
-                    a2_attempts: a2_attempts,
-                    b1_success: b1_success,
-                    b1_attempts: b1_attempts,
-                    b2_success: b2_success,
-                    b2_attempts: b2_attempts,
-                    c1_success: c1_success,
-                    c1_attempts: c1_attempts,
-                    c2_success: c2_success,
-                    c2_attempts: c2_attempts,
-                    d1_success: d1_success,
-                    d1_attempts: d1_attempts,
-                    d2_success: d2_success,
-                    d2_attempts: d2_attempts,
-                    lb_success: lb_success,
-                    lb_attempts: lb_attempts,
-                    a1_speed: a1_speed,
-                    a2_speed: a2_speed,
-                    b1_speed: b1_speed,
-                    b2_speed: b2_speed,
-                    c1_speed: c1_speed,
-                    c2_speed: c2_speed,
-                    d1_speed: d1_speed,
-                    d2_speed: d2_speed,
-                    lb_speed: lb_speed,
-                    a1_stuck: a1_stuck,
-                    a2_stuck: a2_stuck,
-                    b1_stuck: b1_stuck,
-                    b2_stuck: b2_stuck,
-                    c1_stuck: c1_stuck,
-                    c2_stuck: c2_stuck,
-                    d1_stuck: d1_stuck,
-                    d2_stuck: d2_stuck,
-                    lb_stuck: lb_stuck,
-					a1_assists: a1_assists,
-                    a2_assists: a2_assists,
-                    b1_assists: b1_assists,
-                    b2_assists: b2_assists,
-                    c1_assists: c1_assists,
-                    c2_assists: c2_assists,
-                    d1_assists: d1_assists,
-                    d2_assists: d2_assists,
-                    lb_assists: lb_assists,
-                    hang_made: hang_made,
-                    hang_attempts: hang_attempts,
-                    challenge_made: challenge_made,
-                    challenge_attempts: challenge_attempts,
+                    previous_team_num: previous_team_num,
+                    next_team_num: next_team_num,
+                    avg_auto_gears_scored: avg_auto_gears_scored,
+                    avg_auto_gears_attempts: avg_auto_gears_attempts,
+                    avg_auto_high_made: avg_auto_high_made,
+                    avg_auto_high_attempts: avg_auto_high_attempts,
+                    avg_auto_low_made: avg_auto_low_made,
+                    avg_auto_low_attempts: avg_auto_low_attempts,
+                    tot_baseline_cross: tot_baseline_cross,
+                    avg_auto_hopper_intake: avg_auto_hopper_intake,
+                    avg_auto_floor_gear_intake: avg_auto_floor_gear_intake,
+                    avg_auto_floor_ball_intake: avg_auto_floor_ball_intake,
+                    avg_auto_contrib_kpa: avg_auto_contrib_kpa,
+
+                    avg_num_cycles: avg_num_cycles,
+                    avg_cycle_time: avg_cycle_time,
+                    avg_tele_high_made: avg_tele_high_made,
+                    avg_tele_high_attempts: avg_tele_high_attempts,
+                    avg_tele_low_made: avg_tele_low_made,
+                    avg_tele_low_attempts: avg_tele_low_attempts,
+                    avg_tele_gears_scored: avg_tele_gears_scored,
+                    avg_tele_gears_attempts: avg_tele_gears_attempts,
+                    avg_tele_floor_ball_intake: avg_tele_floor_ball_intake,
+                    avg_tele_floor_gear_intake: avg_tele_floor_gear_intake,
+                    avg_tele_hopper_intake: avg_tele_hopper_intake,
+                    avg_hp_ball_intake: avg_hp_ball_intake,
+                    avg_hp_gear_intake: avg_hp_gear_intake,
+                    tot_climb: tot_climb,
+                    tot_climb_attempts: tot_climb_attempts,
+                    tot_fouls: tot_fouls,
+                    tot_deads: tot_deads,
+                    avg_contrib_kpa: avg_contrib_kpa,
                     no_autos: no_autos,
-                    auton_reaches: auton_reaches,
                     trend_labels: trend_labels,
+                    gears_trend: gears_trend,
                     high_goal_trend: high_goal_trend
                 });
             });
@@ -1422,9 +1349,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, md5)
 
             "perc_tele_gears_scored=100*(SELECT SUM(tele_gears_scored)/(SUM(tele_gears_missed)+SUM(tele_gears_scored)) FROM matches WHERE team_num=" + team_num + "), " +
             "tot_tele_gears_scored=(SELECT SUM(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
-            "tot_tele_gears_scored=(SELECT SUM(tele_gears_scored)+SUM(tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "tot_tele_gears_attempts=(SELECT SUM(tele_gears_scored)+SUM(tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
             "avg_tele_gears_scored=(SELECT AVG(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
-            "avg_tele_gears_scored=(SELECT AVG(tele_gears_scored+tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+            "avg_tele_gears_attempts=(SELECT AVG(tele_gears_scored+tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
             "avg_tele_gears_scored_per_cycle=(SELECT AVG(tele_gears_scored)/AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
 
             "avg_tele_floor_ball_intake=(SELECT AVG(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
