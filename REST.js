@@ -1022,8 +1022,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
             var no_autos = 0;
             var trend_labels = "";
-            var gears_trend = "";
-            var high_goal_trend = "";
+            var tele_gears_trend = "";
+            var auto_gears_trend = "";
+            var tele_high_goal_trend = "";
+            var auto_high_goal_trend = "";
 			//updateContribScores(team_num);
             updateTeams(team_num);
 
@@ -1109,8 +1111,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
                 for(var x in rows)
                 {
                     trend_labels += rows[x].match_num + ", ";
-                    gears_trend += rows[x].tele_gears_scored + ", ";
-                    high_goal_trend += rows[x].tele_high_made + ", ";
+                    tele_gears_trend += rows[x].tele_gears_scored + ", ";
+                    auto_gears_trend += rows[x].auto_gears_scored + ", ";
+                    tele_high_goal_trend += rows[x].tele_high_made + ", ";
+                    auto_high_goal_trend += rows[x].auto_high_made + ", ";
                 }
                 // console.log(high_goal_trend);
                 // console.log(gears_trend);
@@ -1152,8 +1156,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
                     avg_contrib_kpa: avg_contrib_kpa,
                     no_autos: no_autos,
                     trend_labels: trend_labels,
-                    gears_trend: gears_trend,
-                    high_goal_trend: high_goal_trend
+                    tele_gears_trend: tele_gears_trend,
+                    auto_gears_trend: auto_gears_trend,
+                    tele_high_goal_trend: tele_high_goal_trend,
+                    auto_high_goal_trend: auto_high_goal_trend
                 });
             });
         });
