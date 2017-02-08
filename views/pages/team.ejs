@@ -15,7 +15,7 @@
         <h2>
           <strong><%= team_num %> - <%= team_name %></strong>
           <br />
-          <div class="btn-group" role="group" aria-label="...">
+          <div class="btn-group" role="group" aria-label="..." style="top: 5px;">
             <a href="/team/<%= previous_team_num %>" type="button" class="btn btn-default">Previous</a>
             <a href="/team/<%= next_team_num %>" type="button" class="btn btn-default">Next</a>
           </div>
@@ -63,6 +63,10 @@
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">HP Ball Intake: <%= avg_hp_ball_intake %></h5></td>
           </tr>
           <tr>
+            <td><h5 style="margin-top:0;">Gears Dropped: <%= avg_tele_gears_dropped %></h5></td>
+            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Gear Knockouts: <%= avg_tele_gear_knockouts %></h5></td>
+          </tr>
+          <tr>
             <td><h5 style="margin-top:0;">Deads: <%= tot_deads %></h5></td>
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Fouls: <%= tot_fouls %></h5></td>
           </tr>
@@ -73,18 +77,22 @@
         </table>
       </div>
       <div class="col-lg-6 col-lg-offset-1 col-md-6 col-md-offset-1 col-sm-offset-0 col-xs-offset-0 col-sm-12 col-xs-12" style="font-size: 10px; top: -60px;">
-        <h4><strong>Gear Trend</strong></h4>
-        <canvas id="gears_trend_line"></canvas>
+        <div>
+          <h4><strong>Gear Trend</strong></h4>
+          <canvas id="gears_trend_line"></canvas>
+        </div>
 
-        <h4><strong>High Goal Trend</strong></h4>
-        <canvas id="high_trend_line"></canvas>
+        <div>
+          <h4><strong>High Goal Trend</strong></h4>
+          <canvas id="high_trend_line"></canvas>
+        </div>
 
         <script type="text/javascript">
           var gears_data = {
             labels: [<%= trend_labels %> 'Next'],
             datasets: [
               {
-                label: "Auton Gears",
+                label: "Auton",
                 fillColor: "rgba(255,166,158,0.2)",
                 strokeColor: "rgba(255,166,158,1)",
                 pointColor: "rgba(255,166,158,1)",
@@ -94,7 +102,7 @@
                 data: [<%= auto_gears_trend %>]
               },
               {
-                label: "TeleOp Gears",
+                label: "TeleOp",
                 fillColor: "rgba(151,187,205,0.2)",
                 strokeColor: "rgba(151,187,205,1)",
                 pointColor: "rgba(151,187,205,1)",
@@ -110,7 +118,7 @@
             labels: [<%= trend_labels %> 'Next'],
             datasets: [
               {
-                label: "Auton High Goal",
+                label: "Auton",
                 fillColor: "rgba(255,166,158,0.2)",
                 strokeColor: "rgba(255,166,158,1)",
                 pointColor: "rgba(255,166,158,1)",
@@ -120,7 +128,7 @@
                 data: [<%= auto_high_goal_trend %>]
               },
               {
-                label: "TeleOp High Goal",
+                label: "TeleOp",
                 fillColor: "rgba(151,187,205,0.2)",
                 strokeColor: "rgba(151,187,205,1)",
                 pointColor: "rgba(151,187,205,1)",
@@ -135,8 +143,8 @@
           {
             var ctx = document.getElementById("gears_trend_line").getContext("2d");
             var ctx1 = document.getElementById("high_trend_line").getContext("2d");
-            var myLineChart = new Chart(ctx).Line(gears_data,  {responsive: true, scaleOverride: true, scaleSteps:10, scaleStepWidth:1, scaleStartValue:0});
-            var myLineChart1 = new Chart(ctx1).Line(high_data,  {responsive: true, scaleOverride: true, scaleSteps:10, scaleStepWidth:50, scaleStartValue:0});
+            var myLineChart = new Chart(ctx).Line(gears_data,  {responsive: true, scaleOverride: true, scaleSteps: 10, scaleStepWidth: 1, scaleStartValue: 0});
+            var myLineChart1 = new Chart(ctx1).Line(high_data,  {responsive: true, scaleOverride: true, scaleSteps: 10, scaleStepWidth: 50, scaleStartValue: 0});
           }
         </script>
       </div>
