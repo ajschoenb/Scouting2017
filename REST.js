@@ -629,6 +629,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     }
 
       if(team_num_4 != 0) {
+        updateTeams(team_num_4);
+
         var get_data_4 = "SELECT * FROM teams WHERE team_num='"+ team_num_4 +"'";
 
   			connection.query(get_data_4, function(err, rows, fields) {
@@ -680,6 +682,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   			});
       }
       if(team_num_5 != 0) {
+        updateTeams(team_num_5);
+
         var get_data_5 = "SELECT * FROM teams WHERE team_num='"+ team_num_5 +"'";
 
   			connection.query(get_data_5, function(err, rows, fields) {
@@ -731,6 +735,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   			});
       }
       if(team_num_6 != 0) {
+        updateTeams(team_num_6);
+
         var get_data_6 = "SELECT * FROM teams WHERE team_num='"+ team_num_6 +"'";
 
   			connection.query(get_data_6, function(err, rows, fields) {
