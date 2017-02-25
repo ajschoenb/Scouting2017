@@ -227,6 +227,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
 		var team_num_1 = !Number.isNaN(req.params.team_1) ? Number(req.params.team_1) : 0;
     var team_name_1 = "";
+    var most_recent_match_1 = [];
     var next_team_num_1 = 0;
     var previous_team_num_1 = 0;
     var avg_auto_gears_scored_1 = 0;
@@ -265,6 +266,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
 		var team_num_2 = !Number.isNaN(req.params.team_2) ? Number(req.params.team_2) : 0;
     var team_name_2 = "";
+    var most_recent_match_2 = [];
     var next_team_num_2 = 0;
     var previous_team_num_2 = 0;
     var avg_auto_gears_scored_2 = 0;
@@ -303,6 +305,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
 		var team_num_3 = !Number.isNaN(req.params.team_3) ? Number(req.params.team_3) : 0;
     var team_name_3 = "";
+    var most_recent_match_3 = [];
     var next_team_num_3 = 0;
     var previous_team_num_3 = 0;
     var avg_auto_gears_scored_3 = 0;
@@ -341,6 +344,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
     var team_num_4 = !Number.isNaN(req.params.team_4) ? Number(req.params.team_4) : undefined;
     var team_name_4 = "";
+    var most_recent_match_4 = [];
     var next_team_num_4 = 0;
     var previous_team_num_4 = 0;
     var avg_auto_gears_scored_4 = 0;
@@ -379,6 +383,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
 		var team_num_5 = !Number.isNaN(req.params.team_5) ? Number(req.params.team_5) : undefined;
     var team_name_5 = "";
+    var most_recent_match_5 = [];
     var next_team_num_5 = 0;
     var previous_team_num_5 = 0;
     var avg_auto_gears_scored_5 = 0;
@@ -417,6 +422,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
 		var team_num_6 = !Number.isNaN(req.params.team_6) ? Number(req.params.team_6) : undefined;
     var team_name_6 = "";
+    var most_recent_match_6 = [];
     var next_team_num_6 = 0;
     var previous_team_num_6 = 0;
     var avg_auto_gears_scored_6 = 0;
@@ -788,16 +794,152 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   			});
       }
 
+      var dir = __dirname + "\\public\\videos";
+      var files = null;
+
+      fs.readdir(dir, function(err, files) {
+        files = files.map(function (fileName) {
+          return {
+            name: fileName,
+            time: fs.statSync(dir + '/' + fileName).mtime.getTime()
+          };
+        })
+        .sort(function (a, b) {
+          return a.time - b.time; })
+        .map(function (v) {
+          return v.name; });
+
+        // console.log(files);
+
+        var match_sql_1 = "SELECT match_num FROM matches WHERE team_num=" + team_num_1 + " LIMIT 1";
+        connection.query(match_sql_1, (err, rows) => {
+          // most_recent_match_1 = files[rows[0].match_num - 1] || "N/A";
+          // console.log(rows[0] == undefined);
+          if(rows[0] != undefined) {
+            most_recent_match_1[0] = rows[0].match_num;
+            most_recent_match_1[1] = files[rows[0].match_num - 1] || "N/A";
+          }
+          else {
+            most_recent_match_1[0] = "N/A";
+            most_recent_match_1[1] = "N/A";
+          }
+        });
+
+        var match_sql_2 = "SELECT match_num FROM matches WHERE team_num=" + team_num_2 + " LIMIT 1";
+        connection.query(match_sql_2, (err, rows) => {
+          // most_recent_match_2 = files[rows[0].match_num - 1] || "N/A";
+          if(rows[0] != undefined) {
+            most_recent_match_2[0] = rows[0].match_num;
+            most_recent_match_2[1] = files[rows[0].match_num - 1] || "N/A";
+          }
+          else {
+            most_recent_match_2[0] = "N/A";
+            most_recent_match_2[1] = "N/A";
+          }
+        });
+
+        var match_sql_3 = "SELECT match_num FROM matches WHERE team_num=" + team_num_3 + " LIMIT 1";
+        connection.query(match_sql_3, (err, rows) => {
+          if(rows[0] != undefined) {
+            most_recent_match_3[0] = rows[0].match_num;
+            most_recent_match_3[1] = files[rows[0].match_num - 1] || "N/A";
+          }
+          else {
+            most_recent_match_3[0] = "N/A";
+            most_recent_match_3[1] = "N/A";
+          }
+        });
+
+        var match_sql_4 = "SELECT match_num FROM matches WHERE team_num=" + team_num_4 + " LIMIT 1";
+        connection.query(match_sql_4, (err, rows) => {
+          if(rows[0] != undefined) {
+            most_recent_match_4[0] = rows[0].match_num;
+            most_recent_match_4[1] = files[rows[0].match_num - 1] || "N/A";
+          }
+          else {
+            most_recent_match_4[0] = "N/A";
+            most_recent_match_4[1] = "N/A";
+          }
+        });
+
+        var match_sql_5 = "SELECT match_num FROM matches WHERE team_num=" + team_num_5 + " LIMIT 1";
+        connection.query(match_sql_5, (err, rows) => {
+          if(rows[0] != undefined) {
+            most_recent_match_5[0] = rows[0].match_num;
+            most_recent_match_5[1] = files[rows[0].match_num - 1] || "N/A";
+          }
+          else {
+            most_recent_match_5[0] = "N/A";
+            most_recent_match_5[1] = "N/A";
+          }
+        });
+
+        var match_sql_6 = "SELECT match_num FROM matches WHERE team_num=" + team_num_6 + " LIMIT 1";
+        connection.query(match_sql_6, (err, rows) => {
+          if(rows[0] != undefined) {
+            most_recent_match_6[0] = rows[0].match_num;
+            most_recent_match_6[1] = files[rows[0].match_num - 1] || "N/A";
+          }
+          else {
+            most_recent_match_6[0] = "N/A";
+            most_recent_match_6[1] = "N/A";
+          }
+        });
+      });
+
           // console.log(avg_auto_gears_scored_1);
       setTimeout(() => {
         var ppt_template = require("ppt-template");
         var Presentation = ppt_template.Presentation;
 
         var myPres = new Presentation();
-        myPres.loadFile(__dirname + "/alliances/alliance_in.pptx")
+        myPres.loadFile(__dirname + "/alliances/alliance_interface.pptx")
         .then(() => {
-          var slide1 = myPres.getSlide(1); // Index starts at 1 for some reason
-          slide1.fill([
+          var mainSlide = myPres.getSlide(1); // Index starts at 1 for some reason
+          mainSlide.fill([
+            {
+              key: "team_num_1",
+              value: team_num_2
+            },
+            {
+              key: "match_num_1",
+              value: most_recent_match_2[0]
+            },
+            {
+              key: "team_num_2",
+              value: team_num_3
+            },
+            {
+              key: "match_num_2",
+              value: most_recent_match_3[0]
+            },
+            {
+              key: "team_num_3",
+              value: team_num_4
+            },
+            {
+              key: "match_num_3",
+              value: most_recent_match_4[0]
+            },
+            {
+              key: "team_num_4",
+              value: team_num_5
+            },
+            {
+              key: "match_num_4",
+              value: most_recent_match_5[0]
+            },
+            {
+              key: "team_num_5",
+              value: team_num_6
+            },
+            {
+              key: "match_num_5",
+              value: most_recent_match_6[0]
+            },
+          ]);
+          var sheetSlide = myPres.getSlide(2); // Index starts at 1 for some reason
+          sheetSlide.fill([
             {
               key: "team_num_1",
               value: team_num_1
@@ -1447,7 +1589,42 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_tele_gear_knockouts_6
             }
           ]);
-          var slides = [slide1];
+          var video1 = myPres.getSlide(3);
+          video1.fill([
+            {
+              key: "match_link_1",
+              value: most_recent_match_2[1]
+            }
+          ]);
+          var video2 = myPres.getSlide(4);
+          video2.fill([
+            {
+              key: "match_link_2",
+              value: most_recent_match_3[1]
+            }
+          ]);
+          var video3 = myPres.getSlide(5);
+          video3.fill([
+            {
+              key: "match_link_3",
+              value: most_recent_match_4[1]
+            }
+          ]);
+          var video4 = myPres.getSlide(6);
+          video4.fill([
+            {
+              key: "match_link_4",
+              value: most_recent_match_5[1]
+            }
+          ]);
+          var video5 = myPres.getSlide(7);
+          video5.fill([
+            {
+              key: "match_link_5",
+              value: most_recent_match_6[1]
+            }
+          ]);
+          var slides = [mainSlide, sheetSlide, video1, video2, video3, video4, video5];
           return myPres.generate(slides);
         }).then((newPres) => {
           newPres.saveAs(__dirname + "/alliances/alliance_" + team_num_1 + "_" + team_num_2 + "_" + team_num_3 + "_"
@@ -1488,6 +1665,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             tot_deads_1: tot_deads_1,
             avg_contrib_kpa_1: avg_contrib_kpa_1,
             no_autos_1: no_autos_1,
+            most_recent_match_1: most_recent_match_1,
 
             team_num_2: team_num_2,
             team_name_2: team_name_2,
@@ -1523,6 +1701,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             tot_deads_2: tot_deads_2,
             avg_contrib_kpa_2: avg_contrib_kpa_2,
             no_autos_2: no_autos_2,
+            most_recent_match_2: most_recent_match_2,
 
             team_num_3: team_num_3,
             team_name_3: team_name_3,
@@ -1558,6 +1737,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             tot_deads_3: tot_deads_3,
             avg_contrib_kpa_3: avg_contrib_kpa_3,
             no_autos_3: no_autos_3,
+            most_recent_match_3: most_recent_match_3,
 
             team_num_4: team_num_4,
             team_name_4: team_name_4,
@@ -1593,6 +1773,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             tot_deads_4: tot_deads_4,
             avg_contrib_kpa_4: avg_contrib_kpa_4,
             no_autos_4: no_autos_4,
+            most_recent_match_4: most_recent_match_4,
 
             team_num_5: team_num_5,
             team_name_5: team_name_5,
@@ -1628,6 +1809,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             tot_deads_5: tot_deads_5,
             avg_contrib_kpa_5: avg_contrib_kpa_5,
             no_autos_5: no_autos_5,
+            most_recent_match_5: most_recent_match_5,
 
             team_num_6: team_num_6,
             team_name_6: team_name_6,
@@ -1662,10 +1844,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             tot_fouls_6: tot_fouls_6,
             tot_deads_6: tot_deads_6,
             avg_contrib_kpa_6: avg_contrib_kpa_6,
-            no_autos_6: no_autos_6
+            no_autos_6: no_autos_6,
+            most_recent_match_6: most_recent_match_6
           });
         });
-      }, 1000);
+      }, 2500);
 		// });
 	});
 
@@ -1834,7 +2017,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         };
       })
       .sort(function (a, b) {
-        return b.time - a.time; })
+        return a.time - b.time; })
       .map(function (v) {
         return v.name; });
 
