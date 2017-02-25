@@ -1879,6 +1879,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var avg_auto_hopper_intake = 0;
     var avg_auto_floor_gear_intake = 0;
     var avg_auto_floor_ball_intake = 0;
+    var avg_auto_gears_dropped = 0;
     var avg_auto_contrib_kpa = 0;
 
     var avg_num_cycles = 0;
@@ -1931,6 +1932,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       avg_auto_hopper_intake = rows[0].avg_auto_hopper_intake;
       avg_auto_floor_gear_intake = rows[0].avg_auto_floor_gear_intake;
       avg_auto_floor_ball_intake = rows[0].avg_auto_floor_ball_intake;
+      avg_auto_gears_dropped = rows[0].avg_auto_gears_dropped;
       avg_auto_contrib_kpa = rows[0].avg_auto_contrib_kpa;
 
       avg_num_cycles = rows[0].avg_num_cycles;
@@ -1959,7 +1961,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     connection.query(no_auto_sql, function(err, rows, fields) {
       for(var x in rows)
       {
-        if(rows[x].auto_contrib_kpa == 0 && rows[x].auto_gears_scored == 0 && rows[x].baseline_cross == 0)
+        if(rows[x].auto_high_made == 0 && rows[x].auto_high_missed == 0 && rows[x].auto_low_made == 0
+          && rows[x].auto_low_missed == 0 && rows[x].baseline_cross == 0 && rows[x].auto_hopper_intake == 0
+          && rows[x].auto_floor_gear_intake == 0 && rows[x].auto_floor_ball_intake == 0
+          && rows[x].auto_gears_scored == 0 && rows[x].auto_gears_missed == 0 && rows[x].auto_gears_dropped == 0)
         {
           no_autos++;
         }
@@ -2057,6 +2062,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           avg_auto_hopper_intake: avg_auto_hopper_intake,
           avg_auto_floor_gear_intake: avg_auto_floor_gear_intake,
           avg_auto_floor_ball_intake: avg_auto_floor_ball_intake,
+          avg_auto_gears_dropped: avg_auto_gears_dropped,
           avg_auto_contrib_kpa: avg_auto_contrib_kpa,
 
           avg_num_cycles: avg_num_cycles,
@@ -2118,6 +2124,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var auto_floor_ball_intake = Number(req.body.auto_floor_ball_intake);
     var auto_gears_scored = Number(req.body.auto_gears_scored);
     var auto_gears_missed = Number(req.body.auto_gears_missed);
+    var auto_gears_dropped = Number(req.body.auto_gears_dropped);
     var tele_high_made = Number(req.body.tele_high_made);
     var tele_high_missed = Number(req.body.tele_high_missed);
     var tele_low_made = Number(req.body.tele_low_made);
@@ -2142,13 +2149,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
     var matches_sql_v2 = "INSERT INTO `matches` (`match_num`, `team_num`, `auto_high_made`, `auto_high_missed`, " +
       "`auto_low_made`, `auto_low_missed`, `baseline_cross`, `auto_hopper_intake`, `auto_floor_gear_intake`, " +
-      "`auto_floor_ball_intake`, `auto_gears_scored`, `auto_gears_missed`, `tele_high_made`, `tele_high_missed`, `tele_low_made`, " +
+      "`auto_floor_ball_intake`, `auto_gears_scored`, `auto_gears_missed`, `auto_gears_dropped`, `tele_high_made`, `tele_high_missed`, `tele_low_made`, " +
       "`tele_low_missed`, `num_cycles`, `tele_floor_ball_intake`, `hp_ball_intake`, `tele_hopper_intake`, `tele_gears_scored`, " +
       "`tele_gears_missed`, `tele_floor_gear_intake`, `hp_gear_intake`, `tele_gears_dropped`, `tele_gear_knockouts`, `fouls`," +
       "`dead`, `climb`, `failed_climb`, `auto_contrib_kpa`, `contrib_kpa`) VALUES (" + match_num + ", " + team_num +
       ", " + auto_high_made + ", " + auto_high_missed + ", " + auto_low_made + ", " + auto_low_missed + ", " + baseline_cross +
       ", " + auto_hopper_intake + ", " + auto_floor_gear_intake + ", " + auto_floor_ball_intake + ", " + auto_gears_scored +
-      ", " + auto_gears_missed + ", " + tele_high_made + ", " + tele_high_missed + ", " + tele_low_made + ", " + tele_low_missed +
+      ", " + auto_gears_missed + "," + auto_gears_dropped + ", " + tele_high_made + ", " + tele_high_missed + ", " + tele_low_made + ", " + tele_low_missed +
       ", " + num_cycles + ", " + tele_floor_ball_intake + ", " + hp_ball_intake + ", " + tele_hopper_intake + ", " + tele_gears_scored +
       ", " + tele_gears_missed + ", " + tele_floor_gear_intake + ", " + hp_gear_intake + ", " + tele_gears_dropped +
       ", " + tele_gear_knockouts + ", " + fouls + ", " + dead + ", " + climb + ", " + failed_climb + "," + auto_kpa + ", " + tot_kpa + ");"
@@ -2261,6 +2268,9 @@ connection.query(grab_data_sql, function(err, rows, fields) {
 
       "avg_auto_floor_ball_intake=(SELECT AVG(auto_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_auto_floor_ball_intake=(SELECT SUM(auto_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
+
+      "avg_auto_gears_dropped=(SELECT AVG(auto_gears_dropped) FROM matches WHERE team_num=" + team_num + "), " +
+      "tot_auto_gears_dropped=(SELECT SUM(auto_gears_dropped) FROM matches WHERE team_num=" + team_num + "), " +
 
       "avg_num_cycles=(SELECT AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_cycle_time=135/(SELECT AVG(num_cycles) FROM matches WHERE team_num=" + team_num + "), " +
