@@ -811,7 +811,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
         // console.log(files);
 
-        var match_sql_1 = "SELECT match_num FROM matches WHERE team_num=" + team_num_1 + " LIMIT 1";
+        var match_sql_1 = "SELECT match_num FROM matches WHERE team_num=" + team_num_1 + " ORDER BY match_num DESC LIMIT 1";
         connection.query(match_sql_1, (err, rows) => {
           // most_recent_match_1 = files[rows[0].match_num - 1] || "N/A";
           // console.log(rows[0] == undefined);
@@ -825,7 +825,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           }
         });
 
-        var match_sql_2 = "SELECT match_num FROM matches WHERE team_num=" + team_num_2 + " LIMIT 1";
+        var match_sql_2 = "SELECT match_num FROM matches WHERE team_num=" + team_num_2 + " ORDER BY match_num DESC LIMIT 1";
         connection.query(match_sql_2, (err, rows) => {
           // most_recent_match_2 = files[rows[0].match_num - 1] || "N/A";
           if(rows[0] != undefined) {
@@ -838,7 +838,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           }
         });
 
-        var match_sql_3 = "SELECT match_num FROM matches WHERE team_num=" + team_num_3 + " LIMIT 1";
+        var match_sql_3 = "SELECT match_num FROM matches WHERE team_num=" + team_num_3 + " ORDER BY match_num DESC LIMIT 1";
         connection.query(match_sql_3, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_3[0] = rows[0].match_num;
@@ -850,7 +850,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           }
         });
 
-        var match_sql_4 = "SELECT match_num FROM matches WHERE team_num=" + team_num_4 + " LIMIT 1";
+        var match_sql_4 = "SELECT match_num FROM matches WHERE team_num=" + team_num_4 + " ORDER BY match_num DESC LIMIT 1";
         connection.query(match_sql_4, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_4[0] = rows[0].match_num;
@@ -862,7 +862,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           }
         });
 
-        var match_sql_5 = "SELECT match_num FROM matches WHERE team_num=" + team_num_5 + " LIMIT 1";
+        var match_sql_5 = "SELECT match_num FROM matches WHERE team_num=" + team_num_5 + " ORDER BY match_num DESC LIMIT 1";
         connection.query(match_sql_5, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_5[0] = rows[0].match_num;
@@ -874,7 +874,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           }
         });
 
-        var match_sql_6 = "SELECT match_num FROM matches WHERE team_num=" + team_num_6 + " LIMIT 1";
+        var match_sql_6 = "SELECT match_num FROM matches WHERE team_num=" + team_num_6 + " ORDER BY match_num DESC LIMIT 1";
         connection.query(match_sql_6, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_6[0] = rows[0].match_num;
