@@ -27,6 +27,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       for(var x in rows)
       {
         team_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
+	updateTeams(rows[x].team_num);
       }
     });
     //CONTRIB SCORE QUERY
@@ -817,7 +818,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           // console.log(rows[0] == undefined);
           if(rows[0] != undefined) {
             most_recent_match_1[0] = rows[0].match_num;
-            most_recent_match_1[1] = files[rows[0].match_num - 1] || "N/A";
+            most_recent_match_1[1] = files[rows[0].match_num] || "N/A";
           }
           else {
             most_recent_match_1[0] = "N/A";
@@ -830,7 +831,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           // most_recent_match_2 = files[rows[0].match_num - 1] || "N/A";
           if(rows[0] != undefined) {
             most_recent_match_2[0] = rows[0].match_num;
-            most_recent_match_2[1] = files[rows[0].match_num - 1] || "N/A";
+            most_recent_match_2[1] = files[rows[0].match_num] || "N/A";
           }
           else {
             most_recent_match_2[0] = "N/A";
@@ -842,7 +843,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         connection.query(match_sql_3, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_3[0] = rows[0].match_num;
-            most_recent_match_3[1] = files[rows[0].match_num - 1] || "N/A";
+            most_recent_match_3[1] = files[rows[0].match_num] || "N/A";
           }
           else {
             most_recent_match_3[0] = "N/A";
@@ -854,7 +855,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         connection.query(match_sql_4, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_4[0] = rows[0].match_num;
-            most_recent_match_4[1] = files[rows[0].match_num - 1] || "N/A";
+            most_recent_match_4[1] = files[rows[0].match_num] || "N/A";
           }
           else {
             most_recent_match_4[0] = "N/A";
@@ -866,7 +867,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         connection.query(match_sql_5, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_5[0] = rows[0].match_num;
-            most_recent_match_5[1] = files[rows[0].match_num - 1] || "N/A";
+            most_recent_match_5[1] = files[rows[0].match_num] || "N/A";
           }
           else {
             most_recent_match_5[0] = "N/A";
@@ -878,7 +879,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         connection.query(match_sql_6, (err, rows) => {
           if(rows[0] != undefined) {
             most_recent_match_6[0] = rows[0].match_num;
-            most_recent_match_6[1] = files[rows[0].match_num - 1] || "N/A";
+            most_recent_match_6[1] = files[rows[0].match_num] || "N/A";
           }
           else {
             most_recent_match_6[0] = "N/A";
@@ -2040,7 +2041,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             // console.log("first in a row");
             videos += "<div class=\"row\">";
           }
-          videos += "<div class=\"col-lg-6\"><video width=\"480\" height=\"360\" controls><source src=\"../videos/" + files[rows[x].match_num - 1] + "\" type=\"video/mp4\"/></video><h4>Match " + rows[x].match_num + "</h4></div>";
+          videos += "<div class=\"col-lg-6\"><video width=\"480\" height=\"360\" controls><source src=\"../videos/" + files[rows[x].match_num] + "\" type=\"video/mp4\"/></video><h4>Match " + rows[x].match_num + "</h4></div>";
           if(x % 2 === 1 || (Number(x) + 1) >= rows.length) {
             // console.log("last in a row");
             videos += "</div>";
@@ -2237,7 +2238,7 @@ connection.query(grab_data_sql, function(err, rows, fields) {
 
   function updateTeams(team_num)
   {
-      console.log("updating data into teams for team: " + team_num);
+//      console.log("updating data into teams for team: " + team_num);
 
       var team_sql = "UPDATE teams SET num_matches=(SELECT COUNT(*) FROM matches WHERE team_num=" + team_num + "), " +
       "perc_auto_gears_scored=100*(SELECT SUM(auto_gears_scored)/(SUM(auto_gears_missed)+SUM(auto_gears_scored)) FROM matches WHERE team_num=" + team_num + "), " +
@@ -2325,9 +2326,7 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "tot_deads=(SELECT SUM(dead) FROM matches WHERE team_num=" + team_num + "), " +
 
       "avg_auto_contrib_kpa=(SELECT AVG(auto_contrib_kpa) FROM matches WHERE team_num=" + team_num + "), "  +
-      "avg_contrib_kpa=(SELECT AVG(contrib_kpa) FROM matches WHERE team_num=" + team_num + "), " +
-      "avg_gears_scored=(SELECT AVG(tele_gears_scored+auto_gears_scored) FROM WHERE team_num=" + team_num + "), " +
-      "tot_gears_scored=(SELECT SUM(tele_gears_scored+auto_gears_scored) FROM WHERE team_num=" + team_num + ") " +
+      "avg_contrib_kpa=(SELECT AVG(contrib_kpa) FROM matches WHERE team_num=" + team_num + ") " +
 
       "WHERE team_num=" + team_num;
 
