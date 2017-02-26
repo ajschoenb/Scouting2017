@@ -30,7 +30,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       }
     });
     //CONTRIB SCORE QUERY
-    var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_tele_gears_scored DESC, avg_contrib_kpa DESC, team_num ASC";
+    var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_auto_gears_scored+avg_tele_gears_scored DESC, avg_contrib_kpa DESC, team_num ASC";
     connection.query(get_contrib_score_rank, function(err, rows, fields) {
       for(var x in rows)
       {
@@ -2325,8 +2325,9 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "tot_deads=(SELECT SUM(dead) FROM matches WHERE team_num=" + team_num + "), " +
 
       "avg_auto_contrib_kpa=(SELECT AVG(auto_contrib_kpa) FROM matches WHERE team_num=" + team_num + "), "  +
-      "avg_contrib_kpa=(SELECT AVG(contrib_kpa) FROM matches WHERE team_num=" + team_num + ") " +
-
+      "avg_contrib_kpa=(SELECT AVG(contrib_kpa) FROM matches WHERE team_num=" + team_num + "), " +
+      "avg_gears_scored=(SELECT AVG(tele_gears_scored+auto_gears_scored) FROM WHERE team_num=" + team_num + "), " +
+      "tot_gears_scored=(SELECT SUM(tele_gears_scored+auto_gears_scored) FROM WHERE team_num=" + team_num + ") " +
 
       "WHERE team_num=" + team_num;
 
