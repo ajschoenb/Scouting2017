@@ -57,6 +57,7 @@ REST.prototype.configureExpress = function(connection)
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
     app.use(morgan("dev"));
+    // app.use(multer({dest: "public/images"}));
     var router = express.Router();
     app.use('/', router);
     var rest_router = new rest(router, connection);
