@@ -93,7 +93,7 @@
         <table class="table">
           <tr>
             <td><h5 style="margin-top:0;">Auto Contrib kPa: <%= max_auto_contrib_kpa %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Tele Contrib kPa: <%= max_contrib_kpa %></h5></td>
+            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Contrib kPa: <%= max_contrib_kpa %></h5></td>
           </tr>
           <tr>
             <td><h5 style="margin-top:0;">Auto Gears Scored: <%= max_auto_gears_scored %></h5></td>
@@ -118,6 +118,11 @@
         <div>
           <h4><strong>High Goal Trend</strong></h4>
           <canvas id="high_trend_line"></canvas>
+        </div>
+
+        <div>
+          <h4><strong>Climb Trend</strong></h4>
+          <canvas id="climb_trend_line"></canvas>
         </div>
 
         <script type="text/javascript">
@@ -172,12 +177,30 @@
               }
             ]
           };
+
+          var climb_data = {
+            labels: [<%= trend_labels %> 'Next'],
+            datasets: [
+              {
+                label: "Climb",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: [<%= climb_trend %>]
+              }
+            ]
+          };
           window.onload = function()
           {
             var ctx = document.getElementById("gears_trend_line").getContext("2d");
             var ctx1 = document.getElementById("high_trend_line").getContext("2d");
+            var ctx2 = document.getElementById("climb_trend_line").getContext("2d");
             var myLineChart = new Chart(ctx).Line(gears_data,  {responsive: true, scaleOverride: true, scaleSteps: 8, scaleStepWidth: 1, scaleStartValue: 0});
             var myLineChart1 = new Chart(ctx1).Line(high_data,  {responsive: true, scaleOverride: true, scaleSteps: 8, scaleStepWidth: 25, scaleStartValue: 0});
+            var myLineChart2 = new Chart(ctx2).Line(climb_data,  {responsive: true, scaleOverride: true, scaleSteps: 2, scaleStepWidth: 1, scaleStartValue: 0});
           }
         </script>
       </div>

@@ -47,11 +47,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       }
     });
     //CONTRIB SCORE QUERY
-    var get_contrib_score_rank = "SELECT * FROM teams ORDER BY tot_auto_gears_scored+avg_tele_gears_scored DESC, avg_contrib_kpa DESC, team_num ASC";
+    var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_auto_gears_scored+avg_tele_gears_scored DESC, avg_contrib_kpa DESC, team_num ASC";
     connection.query(get_contrib_score_rank, function(err, rows, fields) {
       for(var x in rows)
       {
-        score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].tot_auto_gears_scored)) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td></tr>";
+        score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].avg_auto_gears_scored)).toFixed(3) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td><td>"+ rows[x].tot_climb +"</td></tr>";
       }
       res.render('pages/index', {
         team_list: team_list,
@@ -140,10 +140,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   router.post("/pit-parse", function(req, res) {
     var team_num = req.body.team_num;
     var drive_type = req.body.drive_type;
+    var weight = req.body.weight;
     var filename = req.body.pic_filename;
     // console.log(req.file);
     // fs.createReadStream(filename).pipe(fs.createWriteStream(__dirname + "/public/images/" + filename));
-    var insert_sql = "UPDATE teams SET drive_type=\"" + drive_type + "\" WHERE team_num=" + team_num;
+    var insert_sql = "UPDATE teams SET drive_type=\"" + drive_type + "\", weight=" + weight + " WHERE team_num=" + team_num;
     connection.query(insert_sql, function(err) {
       res.redirect("/pit-entry");
     });
@@ -224,9 +225,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     tba.getEventList(function(err, list_of_teams) {
       for(var x in list_of_teams) {
         var event_date = list_of_teams[x].start_date.split("-");
-        if((Number(event_date[1]) > Number(month)) || (Number(event_date[1]) == Number(month) && Number(event_date[2]) > Number(day))) {
+        // if((Number(event_date[1]) > Number(month)) || (Number(event_date[1]) == Number(month) && Number(event_date[2]) > Number(day))) {
           events += "<option>" + list_of_teams[x].event_code + "-" + list_of_teams[x].name + "</option>\n";
-        }
+        // }
       }
 
       res.render("pages/event", {
@@ -2626,6 +2627,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var auto_gears_trend = "";
     var tele_high_goal_trend = "";
     var auto_high_goal_trend = "";
+    var climb_trend = "";
     var videos = "";
 //updateContribScores(team_num);
     updateTeams(team_num);
@@ -2662,7 +2664,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       avg_num_cycles = rows[0].avg_num_cycles;
       avg_cycle_time = rows[0].avg_cycle_time;
       avg_tele_high_made = rows[0].avg_tele_high_made;
-      max_tele_high_made = rows[0].avg_tele_high_made;
+      max_tele_high_made = rows[0].max_tele_high_made;
       avg_tele_high_attempts = rows[0].avg_tele_high_attempts;
       avg_tele_low_made = rows[0].avg_tele_low_made;
       max_tele_low_made = rows[0].max_tele_low_made;
@@ -2738,6 +2740,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         auto_gears_trend += rows[x].auto_gears_scored + ", ";
         tele_high_goal_trend += rows[x].tele_high_made + ", ";
         auto_high_goal_trend += rows[x].auto_high_made + ", ";
+        climb_trend += rows[x].climb + ", ";
       }
       // console.log(high_goal_trend);
       // console.log(gears_trend);
@@ -2840,6 +2843,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           auto_gears_trend: auto_gears_trend,
           tele_high_goal_trend: tele_high_goal_trend,
           auto_high_goal_trend: auto_high_goal_trend,
+          climb_trend: climb_trend,
           videos: videos
         });
       });
@@ -2881,7 +2885,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var tele_high_missed = Number(req.body.tele_high_missed);
     var tele_low_made = Number(req.body.tele_low_made);
     var tele_low_missed = Number(req.body.tele_low_missed);
-    var num_cycles = Number(req.body.num_cycles);
     var tele_floor_ball_intake = Number(req.body.tele_floor_ball_intake);
     var hp_ball_intake = Number(req.body.hp_ball_intake);
     var tele_hopper_intake = Number(req.body.tele_hopper_intake);
@@ -2907,17 +2910,17 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       "`auto_low_made`, `auto_low_missed`, `baseline_cross`, `auto_hopper_intake`, `auto_floor_gear_intake`, " +
       "`auto_floor_ball_intake`, `auto_gears_scored_top`, `auto_gears_scored_mid`, `auto_gears_scored_bot`, " +
       "`auto_gears_scored`, `auto_gears_missed`, " + "`auto_gears_dropped`, `tele_high_made`, `tele_high_missed`, " +
-      "`tele_low_made`, `tele_low_missed`, `num_cycles`, `tele_floor_ball_intake`, `hp_ball_intake`, `tele_hopper_intake`, " +
-      "`tele_gears_scored`, `tele_gears_missed`, `tele_floor_gear_intake`, `hp_gear_intake`, `hp_gear_intake_miss`, `tele_gears_dropped`, " +
+      "`tele_low_made`, `tele_low_missed`, `tele_floor_ball_intake`, `hp_ball_intake`, `tele_hopper_intake`, `tele_gears_scored`, " +
+      "`tele_gears_missed`, `tele_floor_gear_intake`, `hp_gear_intake`, `hp_gear_intake_miss`, `tele_gears_dropped`, " +
       "`tele_gear_knockouts`, `fouls`, `dead`, `climb`, `failed_climb`, `mobility_rating`, `defense_rating`, " +
       "`auto_contrib_kpa`, `contrib_kpa`) VALUES (" + match_num + ", " + team_num + ", " + auto_high_made + ", " + auto_high_missed +
       ", " + auto_low_made + ", " + auto_low_missed + ", " + baseline_cross + ", " + auto_hopper_intake +
       ", " + auto_floor_gear_intake + ", " + auto_floor_ball_intake + ", " + auto_gears_scored_top +
       ", " + auto_gears_scored_mid + ", " + auto_gears_scored_bot + ", " + auto_gears_scored + ", " + auto_gears_missed +
       "," + auto_gears_dropped + ", " + tele_high_made + ", " + tele_high_missed + ", " + tele_low_made +
-      ", " + tele_low_missed + ", " + num_cycles + ", " + tele_floor_ball_intake + ", " + hp_ball_intake +
-      ", " + tele_hopper_intake + ", " + tele_gears_scored + ", " + tele_gears_missed + ", " + tele_floor_gear_intake +
-      ", " + hp_gear_intake + ", " + hp_gear_intake_miss + ", " + tele_gears_dropped + ", " + tele_gear_knockouts + ", " + fouls + ", " + dead +
+      ", " + tele_low_missed + ", " + tele_floor_ball_intake + ", " + hp_ball_intake + ", " + tele_hopper_intake +
+      ", " + tele_gears_scored + ", " + tele_gears_missed + ", " + tele_floor_gear_intake + ", " + hp_gear_intake +
+      ", " + hp_gear_intake_miss + ", " + tele_gears_dropped + ", " + tele_gear_knockouts + ", " + fouls + ", " + dead +
       ", " + climb + ", " + failed_climb + ", " + mobility_rating + ", " + defense_rating + ", " + auto_kpa + ", " + tot_kpa + ");"
 
     connection.query(matches_sql_v2, function(err) {
@@ -3013,8 +3016,8 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "tot_auto_gears_scored=(SELECT SUM(auto_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
       "max_auto_gears_scored=(SELECT auto_gears_scored FROM matches WHERE team_num=" + team_num + " ORDER BY auto_gears_scored DESC LIMIT 1), " +
       "tot_auto_gears_attempts=(SELECT SUM(auto_gears_scored)+SUM(auto_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
-      "tot_auto_gears_scored=(SELECT AVG(auto_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
-      "tot_auto_gears_attempts=(SELECT AVG(auto_gears_scored+auto_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+      "avg_auto_gears_scored=(SELECT AVG(auto_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
+      "avg_auto_gears_attempts=(SELECT AVG(auto_gears_scored+auto_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
 
       "perc_auto_high_made=100*(SELECT SUM(auto_high_made)/(SUM(auto_high_missed)+SUM(auto_high_made)) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_auto_high_made=(SELECT SUM(auto_high_made) FROM matches WHERE team_num=" + team_num + "), " +
