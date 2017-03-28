@@ -24,34 +24,42 @@
     </div>
     <div class="row">
       <div class="col-lg-5">
-        <h3 style="margin-top:0;">Average kPa: <%= avg_auto_contrib_kpa %> / <%= avg_contrib_kpa %></h3>
-        <!-- <h3 style="margin-top:0;">Blacklist: <%= tot_blacklist %></h3> -->
-        <!-- <h3 style="margin-top:0;">Drive Type: <%= drive_type %></h3> -->
+        <h3><u>Miscellaneous</u></h3>
+        <table class="table">
+          <tr>
+            <td><h4 style="margin-top:0;">Auto kPa: <%= avg_auto_contrib_kpa %></h4></td>
+            <td style="text-align:right; padding-right:50px;"><h4 style="margin-top:0;">Total kPa: <%= avg_contrib_kpa %></h4></td>
+          </tr>
+          <tr>
+            <td><h4 style="margin-top:0;">Drive Type: <%= drive_type %></h4></td>
+            <td style="text-align:right; padding-right:50px;"><h4 style="margin-top:0;">No Autos: <%= no_autos %></h4></td>
+          </tr>
+        </table>
+        <!-- <h3 style="margin-top:0;">Average kPa: <%= avg_auto_contrib_kpa %> / <%= avg_contrib_kpa %></h3>
+        < <h3 style="margin-top:0;">Blacklist: < tot_blacklist ></h3>
+        <h4 style="margin-top:0;">Drive Type: <%= drive_type %></h4>
+        <h4 style="margin-top:0;">No Autos: <%= no_autos %></h4> -->
         <h3><u>Autonomous Data</u></h3>
         <table class="table">
           <tr>
-            <td><h5 style="margin-top:0;">No Auto: <%= no_autos %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Cross: <%= tot_baseline_cross %></h5></td>
+            <!-- <td><h5 style="margin-top:0;">No Auto: <%= no_autos %></h5></td> -->
+            <!-- <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Cross: <%= tot_baseline_cross %></h5></td> -->
           </tr>
           <tr>
             <td><h5 style="margin-top:0;">High Goals: <%= avg_auto_high_made %> / <%= avg_auto_high_attempts %></h5></td>
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Low Goals: <%= avg_auto_low_made %> / <%= avg_auto_low_attempts %></h5></td>
           </tr>
           <tr>
-            <td><h5 style="margin-top:0;">Gears Scored Left: <%= tot_auto_gears_scored_top %></h5></td>
+            <td><h5 style="margin-top:0;">Gears Scored Left: <%= tot_auto_gears_scored_left %></h5></td>
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Gears Scored Mid: <%= tot_auto_gears_scored_mid %></h5></td>
           </tr>
           <tr>
-            <td><h5 style="margin-top:0;">Gears Scored Right: <%= tot_auto_gears_scored_bot %></h5></td>
+            <td><h5 style="margin-top:0;">Gears Scored Right: <%= tot_auto_gears_scored_right %></h5></td>
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Gears Scored: <%= tot_auto_gears_scored %> / <%= tot_auto_gears_attempts %></h5></td>
           </tr>
           <tr>
-            <td><h5 style="margin-top:0;">Floor Gear Intake: <%= avg_auto_floor_gear_intake %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Gears Dropped: <%= avg_auto_gears_dropped %></h5></td>
-          </tr>
-          <tr>
-            <td><h5 style="margin-top:0;">Floor Ball Intake: <%= avg_auto_floor_ball_intake %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Hopper Intake: <%= avg_auto_hopper_intake %></h5></td>
+            <td><h5 style="margin-top:0;">Hopper Intake: <%= avg_auto_hopper_intake %></h5></td>
+            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Cross: <%= tot_baseline_cross %></h5></td>
           </tr>
         </table>
         <h3><u>Teleop Data</u></h3>
@@ -69,24 +77,21 @@
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Floor Ball Intake: <%= avg_tele_floor_ball_intake %></h5></td>
           </tr>
           <tr>
-            <td><h5 style="margin-top:0;">HP Gear Intake: <%= avg_hp_gear_intake %> / <%= avg_hp_gear_intake_miss %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">HP Ball Intake: <%= avg_hp_ball_intake %></h5></td>
-          </tr>
-          <tr>
             <td><h5 style="margin-top:0;">Gears Dropped: <%= avg_tele_gears_dropped %></h5></td>
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Gear Knockouts: <%= tot_tele_gear_knockouts %></h5></td>
           </tr>
           <tr>
-            <td><h5 style="margin-top:0;">Deads: <%= tot_deads %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Fouls: <%= tot_fouls %></h5></td>
+            <!-- <td><h5 style="margin-top:0;">Drive Type: <%= drive_type %></h5></td> -->
+            <td><h5 style="margin-top:0;">HP Gear Intake: <%= avg_hp_gear_intake %> / <%= avg_hp_gear_intake_miss %></h5></td>
+            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Climb: <%= tot_climb %> / <%= tot_climb_attempts %></h5></td>
+          </tr>
+          <tr>
+            <td><h5 style="margin-top:0;">Climb Rating: <%= avg_climb_rating %></h5></td>
+            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Climb Time: <%= avg_climb_time %></h5></td>
           </tr>
           <tr>
             <td><h5 style="margin-top:0;">Mobility Rating: <%= avg_mobility_rating %></h5></td>
             <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Defense Rating: <%= avg_defense_rating %></h5></td>
-          </tr>
-          <tr>
-            <td><h5 style="margin-top:0;">Drive Type: <%= drive_type %></h5></td>
-            <td style="text-align:right; padding-right:50px;"><h5 style="margin-top:0;">Climb: <%= tot_climb %> / <%= tot_climb_attempts %></h5></td>
           </tr>
         </table>
         <h3><u>Data Maximums</u></h3>
@@ -200,7 +205,7 @@
             var ctx2 = document.getElementById("climb_trend_line").getContext("2d");
             var myLineChart = new Chart(ctx).Line(gears_data,  {responsive: true, scaleOverride: true, scaleSteps: 8, scaleStepWidth: 1, scaleStartValue: 0});
             var myLineChart1 = new Chart(ctx1).Line(high_data,  {responsive: true, scaleOverride: true, scaleSteps: 8, scaleStepWidth: 25, scaleStartValue: 0});
-            var myLineChart2 = new Chart(ctx2).Line(climb_data,  {responsive: true, scaleOverride: true, scaleSteps: 2, scaleStepWidth: 1, scaleStartValue: 0});
+            var myLineChart2 = new Chart(ctx2).Line(climb_data,  {responsive: true, scaleOverride: true, scaleSteps: 5, scaleStepWidth: 1, scaleStartValue: 0});
           }
         </script>
       </div>
