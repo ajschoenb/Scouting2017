@@ -51,7 +51,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     connection.query(get_contrib_score_rank, function(err, rows, fields) {
       for(var x in rows)
       {
-        score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].avg_auto_gears_scored)).toFixed(3) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td><td>"+ rows[x].tot_climb +"</td></tr>";
+        score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].avg_auto_gears_scored)).toFixed(3) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td><td>"+ rows[x].avg_climb_rating +"</td></tr>";
       }
       res.render('pages/index', {
         team_list: team_list,
