@@ -298,9 +298,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var team_name_1 = "";
     var most_recent_match_1 = [];
     var num_matches_1 = 0;
-    var tot_auto_gears_scored_left_1 = 0;
+    var tot_auto_gears_scored_fdr_1 = 0;
     var tot_auto_gears_scored_mid_1 = 0;
-    var tot_auto_gears_scored_right_1 = 0;
+    var tot_auto_gears_scored_boi_1 = 0;
     var tot_auto_gears_scored_1 = 0;
     var max_auto_gears_scored_1 = 0;
     var tot_auto_gears_attempts_1 = 0;
@@ -344,9 +344,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var team_name_2 = "";
     var most_recent_match_2 = [];
     var num_matches_2 = 0;
-    var tot_auto_gears_scored_left_2 = 0;
+    var tot_auto_gears_scored_fdr_2 = 0;
     var tot_auto_gears_scored_mid_2 = 0;
-    var tot_auto_gears_scored_right_2 = 0;
+    var tot_auto_gears_scored_boi_2 = 0;
     var tot_auto_gears_scored_2 = 0;
     var max_auto_gears_scored_2 = 0;
     var tot_auto_gears_attempts_2 = 0;
@@ -390,9 +390,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var team_name_3 = "";
     var most_recent_match_3 = [];
     var num_matches_3 = 0;
-    var tot_auto_gears_scored_left_3 = 0;
+    var tot_auto_gears_scored_fdr_3 = 0;
     var tot_auto_gears_scored_mid_3 = 0;
-    var tot_auto_gears_scored_right_3 = 0;
+    var tot_auto_gears_scored_boi_3 = 0;
     var tot_auto_gears_scored_3 = 0;
     var max_auto_gears_scored_3 = 0;
     var tot_auto_gears_attempts_3 = 0;
@@ -436,9 +436,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var team_name_4 = "";
     var most_recent_match_4 = [];
     var num_matches_4 = 0;
-    var tot_auto_gears_scored_left_4 = 0;
+    var tot_auto_gears_scored_fdr_4 = 0;
     var tot_auto_gears_scored_mid_4 = 0;
-    var tot_auto_gears_scored_right_4 = 0;
+    var tot_auto_gears_scored_boi_4 = 0;
     var tot_auto_gears_scored_4 = 0;
     var max_auto_gears_scored_4 = 0;
     var tot_auto_gears_attempts_4 = 0;
@@ -482,9 +482,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var team_name_5 = "";
     var most_recent_match_5 = [];
     var num_matches_5 = 0;
-    var tot_auto_gears_scored_left_5 = 0;
+    var tot_auto_gears_scored_fdr_5 = 0;
     var tot_auto_gears_scored_mid_5 = 0;
-    var tot_auto_gears_scored_right_5 = 0;
+    var tot_auto_gears_scored_boi_5 = 0;
     var tot_auto_gears_scored_5 = 0;
     var max_auto_gears_scored_5 = 0;
     var tot_auto_gears_attempts_5 = 0;
@@ -528,9 +528,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var team_name_6 = "";
     var most_recent_match_6 = [];
     var num_matches_6 = 0;
-    var tot_auto_gears_scored_left_6 = 0;
+    var tot_auto_gears_scored_fdr_6 = 0;
     var tot_auto_gears_scored_mid_6 = 0;
-    var tot_auto_gears_scored_right_6 = 0;
+    var tot_auto_gears_scored_boi_6 = 0;
     var tot_auto_gears_scored_6 = 0;
     var max_auto_gears_scored_6 = 0;
     var tot_auto_gears_attempts_6 = 0;
@@ -588,9 +588,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         // console.log(rows[0] != undefined);
         team_name_1 = rows[0].team_name;
         num_matches_1 = rows[0].num_matches;
-        tot_auto_gears_scored_left_1 = rows[0].tot_auto_gears_scored_left;
+        tot_auto_gears_scored_fdr_1 = rows[0].tot_auto_gears_scored_fdr;
         tot_auto_gears_scored_mid_1 = rows[0].tot_auto_gears_scored_mid;
-        tot_auto_gears_scored_right_1 = rows[0].tot_auto_gears_scored_right;
+        tot_auto_gears_scored_boi_1 = rows[0].tot_auto_gears_scored_boi;
         tot_auto_gears_scored_1 = rows[0].tot_auto_gears_scored;
         max_auto_gears_scored_1 = rows[0].max_auto_gears_scored;
         tot_auto_gears_attempts_1 = rows[0].tot_auto_gears_attempts;
@@ -654,9 +654,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 				{
           team_name_2 = rows[0].team_name;
           num_matches_2 = rows[0].num_matches;
-          tot_auto_gears_scored_left_2 = rows[0].tot_auto_gears_scored_left;
+          tot_auto_gears_scored_fdr_2 = rows[0].tot_auto_gears_scored_fdr;
           tot_auto_gears_scored_mid_2 = rows[0].tot_auto_gears_scored_mid;
-          tot_auto_gears_scored_right_2 = rows[0].tot_auto_gears_scored_right;
+          tot_auto_gears_scored_boi_2 = rows[0].tot_auto_gears_scored_boi;
           tot_auto_gears_scored_2 = rows[0].tot_auto_gears_scored;
           max_auto_gears_scored_2 = rows[0].max_auto_gears_scored;
           tot_auto_gears_attempts_2 = rows[0].tot_auto_gears_attempts;
@@ -721,9 +721,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 				{
           team_name_3 = rows[0].team_name;
           num_matches_3 = rows[0].num_matches;
-          tot_auto_gears_scored_left_3 = rows[0].tot_auto_gears_scored_left;
+          tot_auto_gears_scored_fdr_3 = rows[0].tot_auto_gears_scored_fdr;
           tot_auto_gears_scored_mid_3 = rows[0].tot_auto_gears_scored_mid;
-          tot_auto_gears_scored_right_3 = rows[0].tot_auto_gears_scored_right;
+          tot_auto_gears_scored_boi_3 = rows[0].tot_auto_gears_scored_boi;
           tot_auto_gears_scored_3 = rows[0].tot_auto_gears_scored;
           max_auto_gears_scored_3 = rows[0].max_auto_gears_scored;
           tot_auto_gears_attempts_3 = rows[0].tot_auto_gears_attempts;
@@ -787,9 +787,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           // console.log(rows[0] != undefined);
           team_name_4 = rows[0].team_name;
           num_matches_4 = rows[0].num_matches;
-          tot_auto_gears_scored_left_4 = rows[0].tot_auto_gears_scored_left;
+          tot_auto_gears_scored_fdr_4 = rows[0].tot_auto_gears_scored_fdr;
           tot_auto_gears_scored_mid_4 = rows[0].tot_auto_gears_scored_mid;
-          tot_auto_gears_scored_right_4 = rows[0].tot_auto_gears_scored_right;
+          tot_auto_gears_scored_boi_4 = rows[0].tot_auto_gears_scored_boi;
           tot_auto_gears_scored_4 = rows[0].tot_auto_gears_scored;
           max_auto_gears_scored_4 = rows[0].max_auto_gears_scored;
           tot_auto_gears_attempts_4 = rows[0].tot_auto_gears_attempts;
@@ -851,9 +851,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           // console.log(rows[0] != undefined);
           team_name_5 = rows[0].team_name;
           num_matches_5 = rows[0].num_matches;
-          tot_auto_gears_scored_left_5 = rows[0].tot_auto_gears_scored_left;
+          tot_auto_gears_scored_fdr_5 = rows[0].tot_auto_gears_scored_fdr;
           tot_auto_gears_scored_mid_5 = rows[0].tot_auto_gears_scored_mid;
-          tot_auto_gears_scored_right_5 = rows[0].tot_auto_gears_scored_right;
+          tot_auto_gears_scored_boi_5 = rows[0].tot_auto_gears_scored_boi;
           tot_auto_gears_scored_5 = rows[0].tot_auto_gears_scored;
           max_auto_gears_scored_5 = rows[0].max_auto_gears_scored;
           tot_auto_gears_attempts_5 = rows[0].tot_auto_gears_attempts;
@@ -915,9 +915,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           // console.log(rows[0] != undefined);
           team_name_6 = rows[0].team_name;
           num_matches_6 = rows[0].num_matches;
-          tot_auto_gears_scored_left_6 = rows[0].tot_auto_gears_scored_left;
+          tot_auto_gears_scored_fdr_6 = rows[0].tot_auto_gears_scored_fdr;
           tot_auto_gears_scored_mid_6 = rows[0].tot_auto_gears_scored_mid;
-          tot_auto_gears_scored_right_6 = rows[0].tot_auto_gears_scored_right;
+          tot_auto_gears_scored_boi_6 = rows[0].tot_auto_gears_scored_boi;
           tot_auto_gears_scored_6 = rows[0].tot_auto_gears_scored;
           max_auto_gears_scored_6 = rows[0].max_auto_gears_scored;
           tot_auto_gears_attempts_6 = rows[0].tot_auto_gears_attempts;
@@ -1170,16 +1170,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_auto_hopper_intake_1
             },
             {
-              key: "tot_auto_gears_scored_left_1",
-              value: tot_auto_gears_scored_left_1
+              key: "tot_auto_gears_scored_fdr_1",
+              value: tot_auto_gears_scored_fdr_1
             },
             {
               key: "tot_auto_gears_scored_mid_1",
               value: tot_auto_gears_scored_mid_1
             },
             {
-              key: "tot_auto_gears_scored_right_1",
-              value: tot_auto_gears_scored_right_1
+              key: "tot_auto_gears_scored_boi_1",
+              value: tot_auto_gears_scored_boi_1
             },
             {
               key: "tot_auto_gears_scored_1",
@@ -1322,16 +1322,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_auto_hopper_intake_2
             },
             {
-              key: "tot_auto_gears_scored_left_2",
-              value: tot_auto_gears_scored_left_2
+              key: "tot_auto_gears_scored_fdr_2",
+              value: tot_auto_gears_scored_fdr_2
             },
             {
               key: "tot_auto_gears_scored_mid_2",
               value: tot_auto_gears_scored_mid_2
             },
             {
-              key: "tot_auto_gears_scored_right_2",
-              value: tot_auto_gears_scored_right_2
+              key: "tot_auto_gears_scored_boi_2",
+              value: tot_auto_gears_scored_boi_2
             },
             {
               key: "tot_auto_gears_scored_2",
@@ -1474,16 +1474,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_auto_hopper_intake_3
             },
             {
-              key: "tot_auto_gears_scored_left_3",
-              value: tot_auto_gears_scored_left_3
+              key: "tot_auto_gears_scored_fdr_3",
+              value: tot_auto_gears_scored_fdr_3
             },
             {
               key: "tot_auto_gears_scored_mid_3",
               value: tot_auto_gears_scored_mid_3
             },
             {
-              key: "tot_auto_gears_scored_right_3",
-              value: tot_auto_gears_scored_right_3
+              key: "tot_auto_gears_scored_boi_3",
+              value: tot_auto_gears_scored_boi_3
             },
             {
               key: "tot_auto_gears_scored_3",
@@ -1626,16 +1626,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_auto_hopper_intake_4
             },
             {
-              key: "tot_auto_gears_scored_left_4",
-              value: tot_auto_gears_scored_left_4
+              key: "tot_auto_gears_scored_fdr_4",
+              value: tot_auto_gears_scored_fdr_4
             },
             {
               key: "tot_auto_gears_scored_mid_4",
               value: tot_auto_gears_scored_mid_4
             },
             {
-              key: "tot_auto_gears_scored_right_4",
-              value: tot_auto_gears_scored_right_4
+              key: "tot_auto_gears_scored_boi_4",
+              value: tot_auto_gears_scored_boi_4
             },
             {
               key: "tot_auto_gears_scored_4",
@@ -1778,16 +1778,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_auto_hopper_intake_5
             },
             {
-              key: "tot_auto_gears_scored_left_5",
-              value: tot_auto_gears_scored_left_5
+              key: "tot_auto_gears_scored_fdr_5",
+              value: tot_auto_gears_scored_fdr_5
             },
             {
               key: "tot_auto_gears_scored_mid_5",
               value: tot_auto_gears_scored_mid_5
             },
             {
-              key: "tot_auto_gears_scored_right_5",
-              value: tot_auto_gears_scored_right_5
+              key: "tot_auto_gears_scored_boi_5",
+              value: tot_auto_gears_scored_boi_5
             },
             {
               key: "tot_auto_gears_scored_5",
@@ -1930,16 +1930,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
               value: avg_auto_hopper_intake_6
             },
             {
-              key: "tot_auto_gears_scored_left_6",
-              value: tot_auto_gears_scored_left_6
+              key: "tot_auto_gears_scored_fdr_6",
+              value: tot_auto_gears_scored_fdr_6
             },
             {
               key: "tot_auto_gears_scored_mid_6",
               value: tot_auto_gears_scored_mid_6
             },
             {
-              key: "tot_auto_gears_scored_right_6",
-              value: tot_auto_gears_scored_right_6
+              key: "tot_auto_gears_scored_boi_6",
+              value: tot_auto_gears_scored_boi_6
             },
             {
               key: "tot_auto_gears_scored_6",
@@ -2074,9 +2074,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           res.render('pages/alliance', {
             team_num_1: team_num_1,
             team_name_1: team_name_1,
-            tot_auto_gears_scored_left_1: tot_auto_gears_scored_left_1,
+            tot_auto_gears_scored_fdr_1: tot_auto_gears_scored_fdr_1,
             tot_auto_gears_scored_mid_1: tot_auto_gears_scored_mid_1,
-            tot_auto_gears_scored_right_1: tot_auto_gears_scored_right_1,
+            tot_auto_gears_scored_boi_1: tot_auto_gears_scored_boi_1,
             tot_auto_gears_scored_1: tot_auto_gears_scored_1,
             max_auto_gears_scored_1: max_auto_gears_scored_1,
             tot_auto_gears_attempts_1: tot_auto_gears_attempts_1,
@@ -2120,9 +2120,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
             team_num_2: team_num_2,
             team_name_2: team_name_2,
-            tot_auto_gears_scored_left_2: tot_auto_gears_scored_left_2,
+            tot_auto_gears_scored_fdr_2: tot_auto_gears_scored_fdr_2,
             tot_auto_gears_scored_mid_2: tot_auto_gears_scored_mid_2,
-            tot_auto_gears_scored_right_2: tot_auto_gears_scored_right_2,
+            tot_auto_gears_scored_boi_2: tot_auto_gears_scored_boi_2,
             tot_auto_gears_scored_2: tot_auto_gears_scored_2,
             max_auto_gears_scored_2: max_auto_gears_scored_2,
             tot_auto_gears_attempts_2: tot_auto_gears_attempts_2,
@@ -2166,9 +2166,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
             team_num_3: team_num_3,
             team_name_3: team_name_3,
-            tot_auto_gears_scored_left_3: tot_auto_gears_scored_left_3,
+            tot_auto_gears_scored_fdr_3: tot_auto_gears_scored_fdr_3,
             tot_auto_gears_scored_mid_3: tot_auto_gears_scored_mid_3,
-            tot_auto_gears_scored_right_3: tot_auto_gears_scored_right_3,
+            tot_auto_gears_scored_boi_3: tot_auto_gears_scored_boi_3,
             tot_auto_gears_scored_3: tot_auto_gears_scored_3,
             max_auto_gears_scored_3: max_auto_gears_scored_3,
             tot_auto_gears_attempts_3: tot_auto_gears_attempts_3,
@@ -2212,9 +2212,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
             team_num_4: team_num_4,
             team_name_4: team_name_4,
-            tot_auto_gears_scored_left_4: tot_auto_gears_scored_left_4,
+            tot_auto_gears_scored_fdr_4: tot_auto_gears_scored_fdr_4,
             tot_auto_gears_scored_mid_4: tot_auto_gears_scored_mid_4,
-            tot_auto_gears_scored_right_4: tot_auto_gears_scored_right_4,
+            tot_auto_gears_scored_boi_4: tot_auto_gears_scored_boi_4,
             tot_auto_gears_scored_4: tot_auto_gears_scored_4,
             max_auto_gears_scored_4: max_auto_gears_scored_4,
             tot_auto_gears_attempts_4: tot_auto_gears_attempts_4,
@@ -2258,9 +2258,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
             team_num_5: team_num_5,
             team_name_5: team_name_5,
-            tot_auto_gears_scored_left_5: tot_auto_gears_scored_left_5,
+            tot_auto_gears_scored_fdr_5: tot_auto_gears_scored_fdr_5,
             tot_auto_gears_scored_mid_5: tot_auto_gears_scored_mid_5,
-            tot_auto_gears_scored_right_5: tot_auto_gears_scored_right_5,
+            tot_auto_gears_scored_boi_5: tot_auto_gears_scored_boi_5,
             tot_auto_gears_scored_5: tot_auto_gears_scored_5,
             max_auto_gears_scored_5: max_auto_gears_scored_5,
             tot_auto_gears_attempts_5: tot_auto_gears_attempts_5,
@@ -2304,9 +2304,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
             team_num_6: team_num_6,
             team_name_6: team_name_6,
-            tot_auto_gears_scored_left_6: tot_auto_gears_scored_left_6,
+            tot_auto_gears_scored_fdr_6: tot_auto_gears_scored_fdr_6,
             tot_auto_gears_scored_mid_6: tot_auto_gears_scored_mid_6,
-            tot_auto_gears_scored_right_6: tot_auto_gears_scored_right_6,
+            tot_auto_gears_scored_boi_6: tot_auto_gears_scored_boi_6,
             tot_auto_gears_scored_6: tot_auto_gears_scored_6,
             max_auto_gears_scored_6: max_auto_gears_scored_6,
             tot_auto_gears_attempts_6: tot_auto_gears_attempts_6,
@@ -2430,9 +2430,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     connection.query(get_data, function(err, rows, fields) {
       team_name = rows[0].team_name;
       num_matches = rows[0].num_matches;
-      tot_auto_gears_scored_left = rows[0].tot_auto_gears_scored_left;
+      tot_auto_gears_scored_fdr = rows[0].tot_auto_gears_scored_fdr;
       tot_auto_gears_scored_mid = rows[0].tot_auto_gears_scored_mid;
-      tot_auto_gears_scored_right = rows[0].tot_auto_gears_scored_right;
+      tot_auto_gears_scored_boi = rows[0].tot_auto_gears_scored_boi;
       tot_auto_gears_scored = rows[0].tot_auto_gears_scored;
       max_auto_gears_scored = rows[0].max_auto_gears_scored;
       tot_auto_gears_attempts = rows[0].tot_auto_gears_attempts;
@@ -2569,9 +2569,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           team_name: team_name,
           previous_team_num: previous_team_num,
           next_team_num: next_team_num,
-          tot_auto_gears_scored_left: tot_auto_gears_scored_left,
+          tot_auto_gears_scored_fdr: tot_auto_gears_scored_fdr,
           tot_auto_gears_scored_mid: tot_auto_gears_scored_mid,
-          tot_auto_gears_scored_right: tot_auto_gears_scored_right,
+          tot_auto_gears_scored_boi: tot_auto_gears_scored_boi,
           tot_auto_gears_scored: tot_auto_gears_scored,
           max_auto_gears_scored: max_auto_gears_scored,
           tot_auto_gears_attempts: tot_auto_gears_attempts,
@@ -2765,14 +2765,14 @@ connection.query(grab_data_sql, function(err, rows, fields) {
     //  console.log("updating data into teams for team: " + team_num);
 
       var team_sql = "UPDATE teams SET num_matches=(SELECT COUNT(*) FROM matches WHERE team_num=" + team_num + "), " +
-      "tot_auto_gears_scored_left=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"Left\" AND team_num=" + team_num + "), " +
-      "tot_auto_gears_scored_left=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"Left\" AND team_num=" + team_num + "), " +
+      "tot_auto_gears_scored_fdr=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"FDR\" AND team_num=" + team_num + "), " +
+      "tot_auto_gears_scored_fdr=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"FDR\" AND team_num=" + team_num + "), " +
 
-      "tot_auto_gears_scored_mid=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"Mid\" AND team_num=" + team_num + "), " +
-      "tot_auto_gears_scored_mid=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"Mid\" AND team_num=" + team_num + "), " +
+      "tot_auto_gears_scored_mid=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"MID\" AND team_num=" + team_num + "), " +
+      "tot_auto_gears_scored_mid=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"MID\" AND team_num=" + team_num + "), " +
 
-      "tot_auto_gears_scored_right=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"Right\" AND team_num=" + team_num + "), " +
-      "tot_auto_gears_scored_right=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"Right\" AND team_num=" + team_num + "), " +
+      "tot_auto_gears_scored_boi=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"BOI\" AND team_num=" + team_num + "), " +
+      "tot_auto_gears_scored_boi=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"BOI\" AND team_num=" + team_num + "), " +
 
       "perc_auto_gears_scored=100*(SELECT SUM(auto_gears_scored)/(SUM(auto_gears_missed)+SUM(auto_gears_scored)) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_auto_gears_scored=(SELECT SUM(auto_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
