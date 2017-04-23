@@ -2539,7 +2539,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         };
       })
       .sort(function (a, b) {
-        return a.time - b.time; })
+        // return a.time - b.time; })
+        // console.log(b.name.substring(4,8));
+        // console.log(a.name.substring(4,8));
+        return Number(Number(a.name.substring(4,8)) - Number(b.name.substring(4,8))); })
       .map(function (v) {
         return v.name; });
 
