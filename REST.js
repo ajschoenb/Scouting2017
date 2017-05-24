@@ -19,6 +19,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   var query_bool = 0;
   var query_res = "";
 
+  var tele_gear_rank = [];
+  var auto_gear_rank = [];
+  var climb_rank = [];
+
   var variable_map = [];
   variable_map["Auto Gears Scored"] = "tot_auto_gears_scored";
   variable_map["Tele Gears Scored"] = "avg_tele_gears_scored";
@@ -37,13 +41,14 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   router.get('/', function(req, res) {       //PAGE RENDER
     var team_list = "";
     var score_list = "";
+    var consist_list = "";
     var get_teams = "SELECT * FROM teams";
     //TEAM QUERY
     connection.query(get_teams, function(err,rows,fields) {
       for(var x in rows)
       {
         team_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
-	updateTeams(rows[x].team_num);
+	      updateTeams(rows[x].team_num);
       }
     });
     //CONTRIB SCORE QUERY
@@ -53,9 +58,18 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       {
         score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].avg_auto_gears_scored)).toFixed(3) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td><td>"+ rows[x].avg_climb_rating +"</td></tr>";
       }
+    });
+    var get_consist_rank = "SELECT * FROM teams ORDER BY cst_tele_gears_scored ASC, team_num ASC";
+    connection.query(get_consist_rank, function(err, rows) {
+      // console.log(rows);
+      for(var x in rows)
+      {
+        consist_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].cst_tele_gears_scored +"</td></tr>";
+      }
       res.render('pages/index', {
         team_list: team_list,
-        score_list: score_list
+        score_list: score_list,
+        consist_list: consist_list
       });
     });
   });
@@ -2365,6 +2379,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   });
 
   router.get('/team/:team_num', function(req,res) {
+    // stdevGears(req.params.team_num);
+    updateRanks();
+
     var team_num = req.params.team_num;
     var team_name = "";
     var num_matches = 0;
@@ -2417,6 +2434,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var tele_high_goal_trend = "";
     var auto_high_goal_trend = "";
     var climb_trend = "";
+    var tele_gear_ranked = 0;
+    var auto_gear_ranked = 0;
+    var climb_ranked = 0;
     var videos = "";
 //updateContribScores(team_num);
     updateTeams(team_num);
@@ -2566,6 +2586,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             videos += "</div>";
           }
         }
+
+        var tele_gear_ranked = tele_gear_rank[team_num];
+        var auto_gear_ranked = auto_gear_rank[team_num];
+        var climb_ranked = climb_rank[team_num];
+
         // console.log(videos);
         res.render('pages/team', {
           team_num: team_num,
@@ -2621,6 +2646,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
           tele_high_goal_trend: tele_high_goal_trend,
           auto_high_goal_trend: auto_high_goal_trend,
           climb_trend: climb_trend,
+          tele_gear_ranked: tele_gear_ranked,
+          auto_gear_ranked: auto_gear_ranked,
+          climb_ranked: climb_ranked,
           videos: videos
         });
       });
@@ -2763,10 +2791,74 @@ connection.query(grab_data_sql, function(err, rows, fields) {
 
 }
 
+  function stdevGears(team_num)
+  {
+    var stdev1 = 0;
+    var stdev2 = 0;
+    var mean = 0;
+    var dev1 = [];
+    var dev2 = [];
+    var stdev_sql = "SELECT STD(tele_gears_scored) AS \"stdev\" FROM matches WHERE team_num=" + team_num;
+    connection.query(stdev_sql, function(err, rows) {
+      stdev1 = rows[0].stdev;
+    });
+    var avg_sql = "SELECT AVG(tele_gears_scored) AS \"avg_gears\" FROM matches WHERE team_num=" + team_num;
+    connection.query(avg_sql, function(err, rows) {
+      mean = rows[0].avg_gears;
+    });
+    var matches_sql = "SELECT tele_gears_scored FROM matches WHERE team_num=" + team_num;
+    connection.query(matches_sql, function(err, rows) {
+      for(var x in rows)
+      {
+        dev1[x] = Math.abs(mean - rows[x].tele_gears_scored);
+        dev2[x] = Math.abs(stdev1 - dev1[x]);
+        stdev2 += (dev2[x] * dev2[x]);
+        // console.log(dev1[x]);
+        // console.log(dev2[x]);
+      }
+      stdev2 /= rows.length;
+      stdev2 = Math.sqrt(stdev2);
+      console.log(stdev1);
+      console.log(stdev2);
+    });
+  }
+
+  function updateRanks()
+  {
+    var tele_gear_sql = "SELECT * FROM teams ORDER BY avg_tele_gears_scored DESC";
+    connection.query(tele_gear_sql, function(err, rows) {
+      for(var x in rows)
+      {
+        // console.log(x);
+        tele_gear_rank[rows[x].team_num] = Number(x) + 1;
+      }
+      // console.log(tele_gear_rank[3008]);
+    });
+
+    var auto_gear_sql = "SELECT * FROM teams ORDER BY tot_auto_gears_scored DESC";
+    connection.query(auto_gear_sql, function(err, rows) {
+      for(var x in rows)
+      {
+        // console.log(x);
+        auto_gear_rank[rows[x].team_num] = Number(x) + 1;
+      }
+      // console.log(tele_gear_rank[118]);
+    });
+
+    var climb_sql = "SELECT * FROM teams ORDER BY avg_climb_rating DESC";
+    connection.query(climb_sql, function(err, rows) {
+      for(var x in rows)
+      {
+        // console.log(x);
+        climb_rank[rows[x].team_num] = Number(x) + 1;
+      }
+      // console.log(tele_gear_rank[118]);
+    });
+  }
+
   function updateTeams(team_num)
   {
     //  console.log("updating data into teams for team: " + team_num);
-
       var team_sql = "UPDATE teams SET num_matches=(SELECT COUNT(*) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_auto_gears_scored_fdr=(SELECT AVG(auto_gears_scored) FROM matches WHERE auto_gear_location=\"FDR\" AND team_num=" + team_num + "), " +
       "tot_auto_gears_scored_fdr=(SELECT SUM(auto_gears_scored) FROM matches WHERE auto_gear_location=\"FDR\" AND team_num=" + team_num + "), " +
@@ -2823,6 +2915,8 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "tot_tele_gears_attempts=(SELECT SUM(tele_gears_scored)+SUM(tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_tele_gears_scored=(SELECT AVG(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_tele_gears_attempts=(SELECT AVG(tele_gears_scored+tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
+      "std_tele_gears_scored=(SELECT STD(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
+      "cst_tele_gears_scored=std_tele_gears_scored/avg_tele_gears_scored, " +
 
       "avg_tele_floor_ball_intake=(SELECT AVG(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_tele_floor_ball_intake=(SELECT SUM(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +

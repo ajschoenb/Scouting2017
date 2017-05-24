@@ -11,7 +11,7 @@
 
   <main style="padding-top: 60px;">
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="panel panel-primary">
           <div class="panel-heading">Team List</div>
           <table class="table">
@@ -24,20 +24,34 @@
         </div>
       </div>
 
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="panel panel-primary">
           <div class="panel-heading">Score Ranking</div>
           <table class="table">
             <tr>
-              <th>Number</th>
-              <th>Gears Scored</th>
-              <th>Contributed kPa</th>
-              <th>Climb Rating</th>
+              <th>Team</th>
+              <th>Gears</th>
+              <th>kPa</th>
+              <th>Climb</th>
             </tr>
             <%- score_list %>
           </table>
         </div>
       </div>
+
+      <div class="col-lg-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Consistency Ranking</div>
+          <table class="table">
+            <tr>
+              <th>Team</th>
+              <th>Gears Consistency</th>
+            </tr>
+            <%- consist_list %>
+          </table>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
