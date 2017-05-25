@@ -16,6 +16,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   // var upload = require("multer")({dest: "public/images"});
 
   var most_recent = 0;
+  var most_recent_match = 0;
+  var num_matches = 0;
   var query_bool = 0;
   var query_res = "";
 
@@ -59,7 +61,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].avg_auto_gears_scored)).toFixed(3) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td><td>"+ rows[x].avg_climb_rating +"</td></tr>";
       }
     });
-    var get_consist_rank = "SELECT * FROM teams ORDER BY cst_tele_gears_scored ASC, team_num ASC";
+    var get_consist_rank = "SELECT * FROM teams ORDER BY cst_tele_gears_scored DESC, team_num ASC";
     connection.query(get_consist_rank, function(err, rows) {
       // console.log(rows);
       for(var x in rows)
@@ -2660,7 +2662,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       if(most_recent == -1)
           display_entry = '<div class="alert alert-danger" role="alert"><p><b>Oh snap</b>, looks like this is a duplicate entry. Data not queried.</p></div>';
       else if(most_recent != -1 && most_recent != 0)
-          display_entry = '<div class="alert alert-success" role="alert"><p>Data for <b>'+ most_recent +'</b> has been <b>successfully</b> entered.</p></div>';
+          display_entry = "<div class=\"alert alert-success\" role=\"alert\"><p>Data for <b>"+ most_recent +"</b> has been <b>successfully</b> entered. <b>" + num_matches + " teams</b> have been entered for <b>match #" + most_recent_match + ".</b></p></div>";
 
 
       res.render('pages/data_entry', {
@@ -2715,20 +2717,24 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       ", " + tele_gears_missed + ", " + tele_floor_gear_intake + ", " + hp_gear_intake + ", " + hp_gear_intake_miss +
       ", " + tele_gears_dropped + ", " + tele_gear_knockouts + ", " + climb_rating + ", " + climb_time + ", " + mobility_rating +
       ", " + defense_rating + ", " + auto_kpa + ", " + tot_kpa + ");"
-
-    connection.query(matches_sql_v2, function(err) {
-      if(err)
-      {
-        most_recent = -1;
-        console.log(err);
+    connection.query("SELECT * FROM matches WHERE match_num=" + match_num, function(err, rows) {
+      num_matches = rows.length + 1;
+      connection.query(matches_sql_v2, function(err) {
+        if(err)
+        {
+          most_recent = -1;
+          most_recent_match = -1;
+          updateTeams(team_num);
+          console.log(err);
+        }
+        else
+        {
+          most_recent = team_num;
+          most_recent_match = match_num;
+          updateTeams(team_num);
+        }
         res.redirect('/data-entry');
-      }
-      else
-      {
-        updateTeams(team_num);
-        most_recent = team_num;
-        res.redirect('/data-entry');
-      }
+      });
     });
   });
 
@@ -2916,7 +2922,7 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "avg_tele_gears_scored=(SELECT AVG(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_tele_gears_attempts=(SELECT AVG(tele_gears_scored+tele_gears_missed) FROM matches WHERE team_num=" + team_num + "), " +
       "std_tele_gears_scored=(SELECT STD(tele_gears_scored) FROM matches WHERE team_num=" + team_num + "), " +
-      "cst_tele_gears_scored=std_tele_gears_scored/avg_tele_gears_scored, " +
+      "cst_tele_gears_scored=avg_tele_gears_scored/std_tele_gears_scored, " +
 
       "avg_tele_floor_ball_intake=(SELECT AVG(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_tele_floor_ball_intake=(SELECT SUM(tele_floor_ball_intake) FROM matches WHERE team_num=" + team_num + "), " +
