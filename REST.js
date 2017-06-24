@@ -2658,16 +2658,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
   });
 
   router.get('/data-entry', function(req, res) {
-      var display_entry = "";
-      if(most_recent == -1)
-          display_entry = '<div class="alert alert-danger" role="alert"><p><b>Oh snap</b>, looks like this is a duplicate entry. Data not queried.</p></div>';
-      else if(most_recent != -1 && most_recent != 0)
-          display_entry = "<div class=\"alert alert-success\" role=\"alert\"><p>Data for <b>"+ most_recent +"</b> has been <b>successfully</b> entered. <b>" + num_matches + " teams</b> have been entered for <b>match #" + most_recent_match + ".</b></p></div>";
+    var display_entry = "";
+    if(most_recent == -1)
+      display_entry = '<div class="alert alert-danger" role="alert"><p><b>Oh snap</b>, looks like this is a duplicate entry. Data not queried.</p></div>';
+    else if(most_recent != -1 && most_recent != 0)
+      display_entry = "<div class=\"alert alert-success\" role=\"alert\"><p>Data for <b>"+ most_recent +"</b> has been <b>successfully</b> entered. <b>" + num_matches + " teams</b> have been entered for <b>match #" + most_recent_match + ".</b></p></div>";
 
 
-      res.render('pages/data_entry', {
-          message: display_entry
-      });
+    res.render('pages/data_entry', {
+      message: display_entry
+    });
   });
 
   router.post('/parse-data', function(req, res) {
