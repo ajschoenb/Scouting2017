@@ -66,7 +66,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       // console.log(rows);
       for(var x in rows)
       {
-        consist_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].cst_tele_gears_scored +"</td></tr>";
+        consist_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].cst_tele_gears_scored + "</td></tr>";
       }
       res.render('pages/index', {
         team_list: team_list,
@@ -2380,6 +2380,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
                     + team_num_4 + "_" + team_num_5 + "_" + team_num_6 + ".pptx");
   });
 
+  router.get('/match/:match_num', function(req, res) {
+    res.render('pages/match');
+  });
+
   router.get('/team/:team_num', function(req,res) {
     // stdevGears(req.params.team_num);
     updateRanks();
@@ -2718,7 +2722,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       ", " + tele_gears_dropped + ", " + tele_gear_knockouts + ", " + climb_rating + ", " + climb_time + ", " + mobility_rating +
       ", " + defense_rating + ", " + auto_kpa + ", " + tot_kpa + ");"
     connection.query("SELECT * FROM matches WHERE match_num=" + match_num, function(err, rows) {
-      num_matches = rows.length + 1;
+      num_matches = rows.length + 1 || 1;
       connection.query(matches_sql_v2, function(err) {
         if(err)
         {
@@ -2888,6 +2892,8 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "tot_auto_high_attempts=(SELECT SUM(auto_high_made)+SUM(auto_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_auto_high_made=(SELECT AVG(auto_high_made) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_auto_high_attempts=(SELECT AVG(auto_high_made+auto_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
+      // "std_auto_high_made=(SELECT STD(auto_high_made) FROM matches WHERE team_num=" + team_num + "), " +
+      // "cst_auto_high_made=avg_auto_high_made/std_auto_high_made, " +
 
       "perc_auto_low_made=100*(SELECT SUM(auto_low_made)/(SUM(auto_low_missed)+SUM(auto_low_made)) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_auto_low_made=(SELECT SUM(auto_low_made) FROM matches WHERE team_num=" + team_num + "), " +
@@ -2907,6 +2913,8 @@ connection.query(grab_data_sql, function(err, rows, fields) {
       "tot_tele_high_attempts=(SELECT SUM(tele_high_made)+SUM(tele_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_tele_high_made=(SELECT AVG(tele_high_made) FROM matches WHERE team_num=" + team_num + "), " +
       "avg_tele_high_attempts=(SELECT AVG(tele_high_made+tele_high_missed) FROM matches WHERE team_num=" + team_num + "), " +
+      // "std_tele_high_made=(SELECT STD(tele_high_made) FROM matches WHERE team_num=" + team_num + "), " +
+      // "cst_tele_high_made=avg_tele_high_made/std_tele_high_made, " +
 
       "perc_tele_low_made=100*(SELECT SUM(tele_low_made)/(SUM(tele_low_missed)+SUM(tele_low_made)) FROM matches WHERE team_num=" + team_num + "), " +
       "tot_tele_low_made=(SELECT SUM(tele_low_made) FROM matches WHERE team_num=" + team_num + "), " +

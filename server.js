@@ -24,25 +24,24 @@ REST.prototype.connectMysql = function()
 {
     var self = this;
 
-    var pool = mysql.createPool({
+/*    var pool = mysql.createPool({
         connectionLimit: 100,
         host     : '127.0.0.1',
         user     : 'root',
         password : '',
         database : 'frcscout2017',
         debug    : false
-    });
-    /* DEPLOY ONLY
+    });*/
+    /* DEPLOY ONLY*/
 
      var pool = mysql.createPool({
         connectionLimit: 100,
-        host     : 'us-cdbr-iron-east-02.cleardb.net',
-        user     : 'b0300fbf50016c',
-        password : '5e2c6588',
-        database : 'heroku_334858cdfe17cb4',
+        host     : 'sql9.freemysqlhosting.net',
+        user     : 'sql9204849',
+        password : 'FkqqHCpm7M',
+        database : 'sql9204849',
         debug    : false
     });
-   */
     pool.getConnection(function(err, connection) {
         if(err)
             self.stop(err);
