@@ -2557,7 +2557,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var dir = __dirname + "\\public\\videos";
     var files = null;
 
-    fs.readdir(dir, function(err, files) {
+/*    fs.readdir(dir, function(err, files) {
       if(err) { console.log(err); return; }
       files = files.map(function (fileName) {
         return {
@@ -2571,7 +2571,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         // console.log(a.name.substring(4,8));
         return Number(Number(a.name.substring(4,8)) - Number(b.name.substring(4,8))); })
       .map(function (v) {
-        return v.name; });
+        return v.name; });*/
 
       // console.log(files);
 
