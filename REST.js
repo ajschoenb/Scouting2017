@@ -2660,7 +2660,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
         });
       });
     });
-  });
+  //});
 
   router.get('/data-entry', function(req, res) {
     var display_entry = "";
