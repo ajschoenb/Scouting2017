@@ -2577,7 +2577,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
 
       var match_sql = "SELECT match_num FROM matches WHERE team_num = " + team_num;
       connection.query(match_sql, function(err, rows, fields) {
-        for(var x in rows) {
+        /*for(var x in rows) {
           // console.log(x % 2 === 0);// + ", " + x % 2 === 1 + ", " + x + 1 >= rows.size + ", " + rows.size + ", " + x);
           // console.log(x % 2 === 1);
           // console.log((Number(x) + 1) >= rows.length);
@@ -2592,7 +2592,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
             // console.log("last in a row");
             videos += "</div>";
           }
-        }
+        }*/
 
         var tele_gear_ranked = tele_gear_rank[team_num];
         var auto_gear_ranked = auto_gear_rank[team_num];
