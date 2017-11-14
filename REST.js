@@ -2558,6 +2558,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     var files = null;
 
     fs.readdir(dir, function(err, files) {
+      if(err) { console.log(err); return; }
       files = files.map(function (fileName) {
         return {
           name: fileName,
