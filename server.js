@@ -50,24 +50,24 @@ REST.prototype.connectMysql = function()
 {
     var self = this;
 
-    var pool = mysql.createPool({
+    /*var pool = mysql.createPool({
         connectionLimit: 100,
         host     : '127.0.0.1',
         user     : 'root',
         password : '',
         database : 'frcscout2017',
         debug    : false
-    });
+    });*/
     /* DEPLOY ONLY*/
 
-     /*var pool = mysql.createPool({
+     var pool = mysql.createPool({
         connectionLimit: 100,
         host     : 'sql9.freemysqlhosting.net',
         user     : 'sql9204849',
         password : 'FkqqHCpm7M',
         database : 'sql9204849',
         debug    : false
-    });*/
+    });
     pool.getConnection(function(err, connection) {
         if(err)
             self.stop(err);
