@@ -17,7 +17,7 @@ app.use(express.static("public"));
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    connection.query("SELECT * FROM users WHERE username='" + username + "'", function(err, rows) {
+    connection.query("SELECT * FROM users WHERE username='" + JSON.stringify(username) + "'", function(err, rows) {
       console.log(rows[0]);
       if(err) { return done(err); }
       if(!rows[0]) { return done(null, false); }
@@ -34,7 +34,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(username, done) {
   console.log(username);
-  connection.query("SELECT * FROM users WHERE username='" + username + "'", function(err, rows) {
+  connection.query("SELECT * FROM users WHERE username='" + JSON.stringify(username) + "'", function(err, rows) {
     if(err) return done(err);
     done(err, rows[0]);
   });

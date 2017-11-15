@@ -106,7 +106,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     }
   });
   router.post("/query", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
-    var sql = req.body.query;
+    var sql = JSON.stringify(req.body.query);
     query_res = "";
     connection.query(sql, function(err, rows, fields) {
       if(err)
@@ -167,10 +167,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
 
   router.post("/pit-parse", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
-    var team_num = req.body.team_num;
-    var drive_type = req.body.drive_type;
-    var weight = req.body.weight;
-    var filename = req.body.pic_filename;
+    var team_num = Number(req.body.team_num);
+    var drive_type = JSON.stringify(req.body.drive_type);
+    var weight = Number(req.body.weight);
+    var filename = JSON.stringify(req.body.pic_filename);
     // console.log(req.file);
     // fs.createReadStream(filename).pipe(fs.createWriteStream(__dirname + "/public/images/" + filename));
     var insert_sql = "UPDATE teams SET drive_type=\"" + drive_type + "\", weight=" + weight + " WHERE team_num=" + team_num;
@@ -299,12 +299,12 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
 
   router.post("/alliance-gen", function(req, res) {
-    var team_1 = req.body.team_1;
-    var team_2 = req.body.team_2;
-    var team_3 = req.body.team_3;
-    var team_4 = req.body.team_4;
-    var team_5 = req.body.team_5;
-    var team_6 = req.body.team_6;
+    var team_1 = Number(req.body.team_1);
+    var team_2 = Number(req.body.team_2);
+    var team_3 = Number(req.body.team_3);
+    var team_4 = Number(req.body.team_4);
+    var team_5 = Number(req.body.team_5);
+    var team_6 = Number(req.body.team_6);
     // console.log(team_4 != "");
     // console.log(team_4 != "");
     // console.log(typeof team_6);
@@ -2401,7 +2401,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     // stdevGears(req.params.team_num);
     updateRanks();
 
-    var team_num = req.params.team_num;
+    var team_num = Number(req.params.team_num);
     var team_name = "";
     var num_matches = 0;
     var next_team_num = 0;
