@@ -4,13 +4,13 @@ var fs = require("fs");
 var TBA = require('thebluealliance');
 var tba = new TBA('FRCScout2017','Software for scouting for 2017 season','1.1.1');
 
-function REST_ROUTER(router, connection)
+function REST_ROUTER(router, connection, passport)
 {
     var self = this;
-    self.handleRoutes(router, connection);
+    self.handleRoutes(router, connection, passport);
 }
 
-REST_ROUTER.prototype.handleRoutes = function(router, connection)
+REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
 {
 
   // var upload = require("multer")({dest: "public/images"});
@@ -75,8 +75,21 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       });
     });
   });
-
-  router.get("/sql", function(req, res) {
+  
+  router.get("/login", function(req, res) {
+    res.render("pages/login");
+  });
+  
+  router.post("/login", passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {
+    res.redirect("/");
+  });
+  
+  router.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/");
+  });
+  
+  router.get("/sql", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var message = "";
     if(query_bool == -1)
       message = "<div class=\"alert alert-danger\" role=\"alert\"><p><b>Oh snap</b>, looks like there's a mistake in your query. Data not queried.</p></div>";
@@ -92,7 +105,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       query_bool = 0;
     }
   });
-  router.post("/query", function(req, res) {
+  router.post("/query", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var sql = req.body.query;
     query_res = "";
     connection.query(sql, function(err, rows, fields) {
@@ -122,7 +135,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
       res.redirect("/sql");
     });
   });
-  router.get("/export", function(req, res) {
+  router.get("/export", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var teams_sql = "SELECT * FROM teams";
     var filename = "teams.csv";
     var data = "";
@@ -149,11 +162,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     });
   });
 
-  router.get("/pit-entry", function(req, res) {
+  router.get("/pit-entry", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     res.render("pages/pit_entry");
   });
 
-  router.post("/pit-parse", function(req, res) {
+  router.post("/pit-parse", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var team_num = req.body.team_num;
     var drive_type = req.body.drive_type;
     var weight = req.body.weight;
@@ -232,7 +245,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     });
   });
 
-  router.get("/event", function(req, res) {
+  router.get("/event", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var date = new Date();
     var day = date.getDate();
     var month = date.getMonth() + 1;
@@ -252,7 +265,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     });
   });
 
-  router.post("/parse-event", function(req, res) {
+  router.post("/parse-event", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var event_code = req.body.event.split("-")[0];
     var teams = [];
     tba.getEventTeams(event_code, 2017, function(err, team_list) {
@@ -2662,7 +2675,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     });
   //});
 
-  router.get('/data-entry', function(req, res) {
+  router.get('/data-entry', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var display_entry = "";
     if(most_recent == -1)
       display_entry = '<div class="alert alert-danger" role="alert"><p><b>Oh snap</b>, looks like this is a duplicate entry. Data not queried.</p></div>';
@@ -2675,7 +2688,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection)
     });
   });
 
-  router.post('/parse-data', function(req, res) {
+  router.post('/parse-data', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
     var team_num = Number(req.body.team_num);
     var match_num = Number(req.body.match_num);
 
