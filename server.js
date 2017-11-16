@@ -6,6 +6,7 @@ var rest = require("./REST.js");
 var morgan = require("morgan");
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
+var md5 = require("md5");
 var express = require('express');
 var bodyParser = require("body-parser"); // Body parser for fetch posted data
 var app = express();
@@ -18,10 +19,9 @@ app.use(express.static("public"));
 passport.use(new LocalStrategy(
   function(username, password, done) {
     connection.query("SELECT * FROM users WHERE username=" + JSON.stringify(username) + "", function(err, rows) {
-      console.log(rows[0]);
       if(err) { return done(err); }
       if(!rows[0]) { return done(null, false); }
-      if(rows[0].password != password) { return done(null, false); }
+      if(rows[0].password != md5(password)) { return done(null, false); }
       return done(null, rows[0]);
     });
   }
