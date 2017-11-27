@@ -3,6 +3,24 @@ var mysql = require("mysql");
 var fs = require("fs");
 var TBA = require('thebluealliance');
 var tba = new TBA('FRCScout2017','Software for scouting for 2017 season','1.1.1');
+var ensureLogin = require('connect-ensure-login');
+var message = "";
+
+function reqAdmin()
+{
+  return [
+    ensureLogin.ensureLoggedIn('/login'),
+    function(req, res, next) {
+      if(req.user && req.user.admin == 1)
+        next();
+      else
+      {
+	message = 'Higher permissions necessary to access page.';
+	res.redirect('/login');
+      }
+    }
+  ]
+}
 
 function REST_ROUTER(router, connection, passport)
 {
@@ -40,7 +58,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
 
 
   // index page
-  router.get('/', function(req, res) {       //PAGE RENDER
+  router.get('/', ensureLogin.ensureLoggedIn('/login'), function(req, res) {       //PAGE RENDER
     var team_list = "";
     var score_list = "";
     var consist_list = "";
@@ -77,11 +95,19 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
   
   router.get("/login", function(req, res) {
-    res.render("pages/login");
+    res.render("pages/login", { message: message });
+    message = '';
   });
   
-  router.post("/login", passport.authenticate('local', { failureRedirect: '/login' }), function(req, res) {
-    res.redirect("/");
+  router.post("/login", function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+      if(err) { return next(err); }
+      if(!user) { return res.render('pages/login', { message: info.message }); }
+      req.logIn(user, function(err) {
+	if(err) { return next(err); }
+	return res.redirect(req.session.returnTo || '/');
+      });
+    })(req, res, next);
   });
   
   router.get("/logout", function(req, res) {
@@ -89,7 +115,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     res.redirect("/");
   });
   
-  router.get("/sql", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.get("/sql", reqAdmin(), function(req, res) {
     var message = "";
     if(query_bool == -1)
       message = "<div class=\"alert alert-danger\" role=\"alert\"><p><b>Oh snap</b>, looks like there's a mistake in your query. Data not queried.</p></div>";
@@ -105,7 +131,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       query_bool = 0;
     }
   });
-  router.post("/query", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.post("/query", reqAdmin(), function(req, res) {
     var sql = JSON.stringify(req.body.query);
     query_res = "";
     connection.query(sql, function(err, rows, fields) {
@@ -135,7 +161,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       res.redirect("/sql");
     });
   });
-  router.get("/export", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.get("/export", reqAdmin(), function(req, res) {
     var teams_sql = "SELECT * FROM teams";
     var filename = "teams.csv";
     var data = "";
@@ -162,11 +188,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     });
   });
 
-  router.get("/pit-entry", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.get("/pit-entry", reqAdmin(), function(req, res) {
     res.render("pages/pit_entry");
   });
 
-  router.post("/pit-parse", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.post("/pit-parse", reqAdmin(), function(req, res) {
     var team_num = Number(req.body.team_num);
     var drive_type = JSON.stringify(req.body.drive_type);
     var weight = Number(req.body.weight);
@@ -179,17 +205,17 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     });
   })
 
-  router.get("/stats-gen", function(req, res) {
+  router.get("/stats-gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     res.render("pages/stats_gen");
   });
 
-  router.post("/stats_gen", function(req, res) {
+  router.post("/stats_gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     var var_name_1 = req.body.var_name_1;
     var var_name_2 = req.body.var_name_2;
     res.redirect("/stats/" + var_name_1 + "," + var_name_2);
   });
 
-  router.get("/stats/:var_name_1,:var_name_2", function(req, res) {
+  router.get("/stats/:var_name_1,:var_name_2", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     var var_name_1 = req.params.var_name_1;
     var var_name_2 = req.params.var_name_2;
     var rank_list_1 = "";
@@ -245,7 +271,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     });
   });
 
-  router.get("/event", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.get("/event", reqAdmin(), function(req, res) {
     var date = new Date();
     var day = date.getDate();
     var month = date.getMonth() + 1;
@@ -265,7 +291,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     });
   });
 
-  router.post("/parse-event", require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.post("/parse-event", reqAdmin(), function(req, res) {
     var event_code = req.body.event.split("-")[0];
     var teams = [];
     tba.getEventTeams(event_code, 2017, function(err, team_list) {
@@ -294,11 +320,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
 
 
-  router.get("/alliance-gen", function(req, res) {
+  router.get("/alliance-gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     res.render("pages/alliance_gen");
   });
 
-  router.post("/alliance-gen", function(req, res) {
+  router.post("/alliance-gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     var team_1 = Number(req.body.team_1);
     var team_2 = Number(req.body.team_2);
     var team_3 = Number(req.body.team_3);
@@ -318,7 +344,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       res.redirect("/alliance/" + team_1 + "," + team_2 + "," + team_3 + "," + team_4 + "," + team_5 + "," + team_6);
   });
 
-	router.get('/alliance/:team_1,:team_2,:team_3,:team_4,:team_5,:team_6', function(req, res) {
+  router.get('/alliance/:team_1,:team_2,:team_3,:team_4,:team_5,:team_6', function(req, res) {
 		// console.log(req.params.team_1);
 		// console.log(req.params.team_2);
 		// console.log(req.params.team_3);
@@ -2382,7 +2408,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
 		// });
 	});
 
-  router.get("/alliance-ppt/:team_1,:team_2,:team_3,:team_4,:team_5,:team_6", function(req, res) {
+  router.get("/alliance-ppt/:team_1,:team_2,:team_3,:team_4,:team_5,:team_6", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     var team_num_1 = req.params.team_1;
     var team_num_2 = req.params.team_2;
     var team_num_3 = req.params.team_3;
@@ -2393,11 +2419,11 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
                     + team_num_4 + "_" + team_num_5 + "_" + team_num_6 + ".pptx");
   });
 
-  router.get('/match/:match_num', function(req, res) {
+  router.get('/match/:match_num', ensureLogin.ensureLoggedIn('/login'), function(req, res) {	  
     res.render('pages/match');
   });
 
-  router.get('/team/:team_num', function(req,res) {
+  router.get('/team/:team_num', ensureLogin.ensureLoggedIn('/login'), function(req,res) {
     // stdevGears(req.params.team_num);
     updateRanks();
 
@@ -2675,7 +2701,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     });
   //});
 
-  router.get('/data-entry', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.get('/data-entry', reqAdmin(), function(req, res) {
     var display_entry = "";
     if(most_recent == -1)
       display_entry = '<div class="alert alert-danger" role="alert"><p><b>Oh snap</b>, looks like this is a duplicate entry. Data not queried.</p></div>';
@@ -2688,7 +2714,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     });
   });
 
-  router.post('/parse-data', require('connect-ensure-login').ensureLoggedIn(), function(req, res) {
+  router.post('/parse-data', reqAdmin(), function(req, res) {
     var team_num = Number(req.body.team_num);
     var match_num = Number(req.body.match_num);
 
