@@ -20,5 +20,53 @@
         $(".clickable-row").click(function() {
             window.document.location = $(this).data("href");
         });
+	
+	$(".edit-table td").click(function (e) {
+          e.preventDefault(); // <-- consume event
+          e.stopImmediatePropagation();
+        
+          $this = $(this);
+
+          if ($this.data('editing')) return;  
+        
+          var val = $this.text();
+        
+          $this.empty()
+          $this.data('editing', true);        
+        
+          $('<input type="text" class="editfield">').val(val).appendTo($this);
+        });
+
+        putOldValueBack = function () {
+          $(".edit-table .editfield").each(function(){
+            $this = $(this);
+            var val = $this.val();
+            var td = $this.closest('td');
+            td.empty().html(val).data('editing', false);
+            
+          });
+        }
+	
+	saveNotes = function() {
+	  var notes = [];
+	  var sVal = "";
+	  $("#notes").find("tr").each(function() {
+            var notesData = [];
+	    $(this).find("td").each(function() {
+	      sVal = $(this).text().replace(/"/g, '""');
+	      notesData.push("" + sVal + "");
+	    });
+	    notes.push(notesData.join(','));
+	  });
+	  var csv = notes.join(',');
+	  csv = csv.substring(1);
+	  //alert(csv);
+	  
+	  $.post("/notes", { notes: csv });
+	}
+
+        $(document).click(function (e) {
+          putOldValueBack();
+        });
     });
 </script>

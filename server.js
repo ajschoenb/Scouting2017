@@ -18,10 +18,11 @@ app.use(express.static("public"));
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    connection.query("SELECT * FROM users WHERE username=" + JSON.stringify(username) + "", function(err, rows) {
+    connection.query("SELECT * FROM users WHERE password=" + JSON.stringify(md5(password)) + "", function(err, rows) {
       if(err) { return done(err); }
       if(!rows[0]) { return done(null, false, { message: 'Invalid username or password' }); }
       if(rows[0].password != md5(password)) { return done(null, false, { message: 'Invalid username or password' }); }
+      rows[0].username = username;
       return done(null, rows[0]);
     });
   }
@@ -51,24 +52,24 @@ REST.prototype.connectMysql = function()
 {
     var self = this;
 
-    /*var pool = mysql.createPool({
+    var pool = mysql.createPool({
         connectionLimit: 100,
         host     : '127.0.0.1',
         user     : 'root',
         password : '',
         database : 'frcscout2017',
         debug    : false
-    });*/
+    });
     /* DEPLOY ONLY*/
 
-    var pool = mysql.createPool({
+    /*var pool = mysql.createPool({
         connectionLimit: 100,
         host     : 'sql9.freesqldatabase.com',
         user     : 'sql9207328',
         password : 'WaNG8mTXnN',
         database : 'sql9207328',
         debug    : false
-    });
+    });*/
     pool.getConnection(function(err, connection) {
         if(err)
             self.stop(err);

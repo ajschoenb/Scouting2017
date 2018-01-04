@@ -62,14 +62,19 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     var team_list = "";
     var score_list = "";
     var consist_list = "";
+    var notes_query = "";
+    
     var get_teams = "SELECT * FROM teams";
     //TEAM QUERY
     connection.query(get_teams, function(err,rows,fields) {
+      notes_query = "INSERT INTO notes (user, notes) VALUES ('" + req.user.username + "', '";
       for(var x in rows)
       {
         team_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
-	      updateTeams(rows[x].team_num);
+	updateTeams(rows[x].team_num);
+	notes_query += rows[x].team_num + ", ,";
       }
+      notes_query = notes_query.substring(0, notes_query.length - 2) + "');"
     });
     //CONTRIB SCORE QUERY
     var get_contrib_score_rank = "SELECT * FROM teams ORDER BY avg_auto_gears_scored+avg_tele_gears_scored DESC, avg_contrib_kpa DESC, team_num ASC";
@@ -79,6 +84,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
         score_list += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ Number(Number(rows[x].avg_tele_gears_scored) + Number(rows[x].avg_auto_gears_scored)).toFixed(3) +"</td><td>"+ rows[x].avg_contrib_kpa +"</td><td>"+ rows[x].avg_climb_rating +"</td></tr>";
       }
     });
+    
+    connection.query("SELECT * FROM notes WHERE user='" + req.user.username + "'", function(err, rows) {
+      if(!rows.length)
+      {
+	connection.query(notes_query, function(err) {
+          if(err) console.log(err);
+	});
+      }
+    });
+    
     var get_consist_rank = "SELECT * FROM teams ORDER BY cst_tele_gears_scored DESC, team_num ASC";
     connection.query(get_consist_rank, function(err, rows) {
       // console.log(rows);
@@ -93,12 +108,12 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       });
     });
   });
-  
+
   router.get("/login", function(req, res) {
     res.render("pages/login", { message: message });
     message = '';
   });
-  
+
   router.post("/login", function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if(err) { return next(err); }
@@ -109,12 +124,46 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       });
     })(req, res, next);
   });
-  
+
   router.get("/logout", function(req, res) {
     req.logout();
     res.redirect("/");
   });
+
+  router.get("/user", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
+    console.log(req.user);
+    res.redirect("/");
+  });
+
+  router.get("/notes", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
+    var notes = [];
+    var notes_ejs = "";
+    var query = "SELECT * FROM notes WHERE user='" + req.user.username + "';";
+    //console.log(query);
+    connection.query(query, function(err, rows) {
+      notes = rows[0].notes.split(',');
+      //console.log(notes);
+      for(var x = 0; x < notes.length; x += 2)
+      {
+        notes_ejs += "<tr><td>"+ notes[x] +"</td><td>"+ notes[x + 1] +"</td></tr>";
+      }
+      //console.log(notes_ejs);
+      res.render("pages/notes", {
+	notes: notes_ejs
+      });
+    });
+  });
   
+      
+  router.post("/notes", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
+    //console.log(req.body);
+    var query = "UPDATE notes SET notes='" + req.body.notes + "' WHERE user='" + req.user.username + "'";
+    connection.query(query, function(err) {
+      if(err) console.log(err);
+      res.redirect("/notes");
+    });
+  });
+
   router.get("/sql", reqAdmin(), function(req, res) {
     var message = "";
     if(query_bool == -1)
@@ -2419,7 +2468,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
                     + team_num_4 + "_" + team_num_5 + "_" + team_num_6 + ".pptx");
   });
 
-  router.get('/match/:match_num', ensureLogin.ensureLoggedIn('/login'), function(req, res) {	  
+  router.get('/match/:match_num', ensureLogin.ensureLoggedIn('/login'), function(req, res) {
     res.render('pages/match');
   });
 
