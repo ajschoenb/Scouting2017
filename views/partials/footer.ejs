@@ -36,8 +36,9 @@
             $this.empty()
             $this.data('editing', true);        
         
-            $('<input type="text" class="editfield">').val(val).appendTo($this);
+            $('<textarea cols="100" class="editfield">').val(val).appendTo($this);
 	  }
+	  else putOldValueBack();
         });
 
         putOldValueBack = function () {
