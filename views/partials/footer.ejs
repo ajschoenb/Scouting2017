@@ -55,6 +55,7 @@
         }
 	
 	saveNotes = function() {
+	  putOldValueBack();
 	  var notes = [];
 	  var sVal = "";
 	  $("#notes").find("tr").each(function() {
@@ -63,9 +64,9 @@
 	        sVal = $(this).text().replace(/"/g, '""');
 	        notesData.push("" + sVal + "");
 	    });
-	    notes.push(notesData.join(','));
+	    notes.push(notesData.join('`'));
 	  });
-	  var csv = notes.join(',');
+	  var csv = notes.join('`');
 	  csv = csv.substring(1);
 	  //alert(csv);
 	  

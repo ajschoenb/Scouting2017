@@ -72,7 +72,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       {
         team_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].team_name +"</td></tr>";
 	updateTeams(rows[x].team_num);
-	notes_query += rows[x].team_num + ", ,";
+	notes_query += rows[x].team_num + "` `";
       }
       notes_query = notes_query.substring(0, notes_query.length - 2) + "');"
     });
@@ -142,7 +142,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     var query = "SELECT * FROM notes WHERE user='" + req.user.username + "';";
     //console.log(query);
     connection.query(query, function(err, rows) {
-      notes = rows[0].notes.split(',');
+      notes = rows[0].notes.split('`');
       //console.log(notes);
       for(var x = 0; x < notes.length; x += 2)
       {
