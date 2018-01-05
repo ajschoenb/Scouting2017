@@ -102,6 +102,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
         consist_list += "<tr class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ rows[x].team_num +"</td><td>"+ rows[x].cst_tele_gears_scored + "</td></tr>";
       }
       res.render('pages/index', {
+	req: req,
         team_list: team_list,
         score_list: score_list,
         consist_list: consist_list
@@ -110,14 +111,14 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
 
   router.get("/login", function(req, res) {
-    res.render("pages/login", { message: message });
+    res.render("pages/login", { req: req, message: message });
     message = '';
   });
 
   router.post("/login", function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
       if(err) { return next(err); }
-      if(!user) { return res.render('pages/login', { message: info.message }); }
+      if(!user) { return res.render('pages/login', { req: req, message: info.message }); }
       req.logIn(user, function(err) {
 	if(err) { return next(err); }
 	return res.redirect(req.session.returnTo || '/');
@@ -149,6 +150,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       }
       //console.log(notes_ejs);
       res.render("pages/notes", {
+	req: req,
 	notes: notes_ejs
       });
     });
@@ -171,6 +173,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
     else if(query_bool != -1 && query_bool != 0)
       message = "<div class=\"alert alert-success\" role=\"alert\"><p>Data has been <b>successfully</b> queried.</p></div>";
     res.render("pages/sql", {
+      req: req,
       message: message,
       result: query_res
     });
@@ -238,7 +241,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
 
   router.get("/pit-entry", reqAdmin(), function(req, res) {
-    res.render("pages/pit_entry");
+    res.render("pages/pit_entry", { req: req });
   });
 
   router.post("/pit-parse", reqAdmin(), function(req, res) {
@@ -255,7 +258,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   })
 
   router.get("/stats-gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
-    res.render("pages/stats_gen");
+    res.render("pages/stats_gen", { req: req });
   });
 
   router.post("/stats_gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
@@ -280,6 +283,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
           rank_list_2 += "<tr title='"+ rows[x].team_name +"' class='clickable-row' data-href='/team/"+ rows[x].team_num +"'><td>"+ Number(Number(x)+1) +"</td><td>"+ rows[x].team_num +"</td><td>"+ rows[x][variable_map[var_name_2]] +"</td></tr>";
         }
         res.render("pages/stats", {
+	  req: req,
           var_name_1: var_name_1,
           rank_list_1: rank_list_1,
           var_name_2: var_name_2,
@@ -335,6 +339,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
       }
 
       res.render("pages/event", {
+	req: req,
         events: events
       });
     });
@@ -370,7 +375,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
 
 
   router.get("/alliance-gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
-    res.render("pages/alliance_gen");
+    res.render("pages/alliance_gen", { req: req });
   });
 
   router.post("/alliance-gen", ensureLogin.ensureLoggedIn('/login'), function(req, res) {
@@ -2176,6 +2181,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
                           + team_num_4 + "_" + team_num_5 + "_" + team_num_6 + ".pptx");
 
           res.render('pages/alliance', {
+	    req: req,
             team_num_1: team_num_1,
             team_name_1: team_name_1,
             tot_auto_gears_scored_fdr_1: tot_auto_gears_scored_fdr_1,
@@ -2469,7 +2475,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
   });
 
   router.get('/match/:match_num', ensureLogin.ensureLoggedIn('/login'), function(req, res) {
-    res.render('pages/match');
+    res.render('pages/match', { req: req });
   });
 
   router.get('/team/:team_num', ensureLogin.ensureLoggedIn('/login'), function(req,res) {
@@ -2688,6 +2694,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
 
         // console.log(videos);
         res.render('pages/team', {
+	  req: req,
           team_num: team_num,
           team_name: team_name,
           previous_team_num: previous_team_num,
@@ -2759,6 +2766,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, connection, passport)
 
 
     res.render('pages/data_entry', {
+      req: req,
       message: display_entry
     });
   });
